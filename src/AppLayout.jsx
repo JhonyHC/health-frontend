@@ -1,7 +1,6 @@
 import { Box, Container, CssBaseline, Stack } from "@mui/material";
 import ResponsiveAppBar from "./ResponsiveAppBar";
 import BasicCard from "./BasicCard";
-import { Toaster } from "react-hot-toast";
 
 function AppLayout() {
     
@@ -18,7 +17,6 @@ function AppLayout() {
                 </Stack>
             </Container>
         </Box>
-        <Toaster />
         </div>
     );
 }

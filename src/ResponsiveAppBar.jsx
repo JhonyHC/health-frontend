@@ -12,9 +12,14 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
+import UserProfile from './helpers/UserProfile';
 
 const pages = ['Inicio', 'Comunidad', 'Mi Salud'];
-const settings = ['Perfil', 'Cuenta', 'Historial', 'Cerrar sesión'];
+const settings = [
+  {name: 'Perfil', onClick: () => {}},
+  {name: 'Historial', onClick: () => {}},
+  {name: 'Cerrar sesión', onClick: () => {UserProfile.logout();window.location.reload()}}
+];
 
 function ResponsiveAppBar() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
@@ -31,7 +36,8 @@ function ResponsiveAppBar() {
     setAnchorElNav(null);
   };
 
-  const handleCloseUserMenu = () => {
+  const handleCloseUserMenu = (event, itemFunction) => {
+    console.log(event);
     setAnchorElUser(null);
   };
 
@@ -148,8 +154,8 @@ function ResponsiveAppBar() {
               onClose={handleCloseUserMenu}
             >
               {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">{setting}</Typography>
+                <MenuItem key={setting.name} onClick={handleCloseUserMenu}>
+                  <Typography onClick={setting.onClick} textAlign="center">{setting.name}</Typography>
                 </MenuItem>
               ))}
             </Menu>

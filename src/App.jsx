@@ -1,10 +1,12 @@
-import { useState } from 'react';
+import { useState, createContext } from 'react';
 import Landing from './Landing';
 import AppLayout from './AppLayout';
+import UserProfile from './helpers/UserProfile';
 
 
 function App() {
-  const [isLogged, setIsLogged] = useState(1); //Logica para el inicio de sesion
+
+  const isLogged = UserProfile.isLoggedIn();
 
 
   return (

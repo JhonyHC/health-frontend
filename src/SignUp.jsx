@@ -14,6 +14,7 @@ import {Link as RouterLink, useNavigate} from 'react-router-dom';
 import { useState } from 'react';
 import { Alert, AlertTitle } from '@mui/material';
 import toast from 'react-hot-toast';
+import UserProfile from './helpers/UserProfile';
 
 
 // TODO remove, this demo shouldn't need to reset the theme.
@@ -23,6 +24,19 @@ const defaultTheme = createTheme();
 export default function SignUp() {
     const navigate = useNavigate();
     const [error, setError] = useState(null);
+
+    const getToken = async (email, password) => {
+        const res = await fetch('http://localhost:8080/auth', {
+            method: 'POST',
+            mode: 'cors',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({email, password})
+        });
+        const {token} = await res.json();
+        return token;
+    }
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -51,12 +65,12 @@ export default function SignUp() {
             return;
         }
         if(res.status === 201) {
-            // toast.success("Cuenta creada 😃") No sirvio jeje
+            toast.success("Cuenta creada 😃")
+            const {username, email, password} = await res.json();
+            const token = await getToken(email, password);
+            UserProfile.createSession(username, email, token);
             navigate('/');
         }
-        const resJson = await res.json();
-
-        console.log(resJson);
 
     } catch (err) {
         console.log(err);
