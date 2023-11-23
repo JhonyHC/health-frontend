@@ -1,5 +1,6 @@
 const UserProfile = (function() {
     let username = "";
+    let userToken = "";
 
     const isLoggedIn = () => localStorage.getItem('userData') ? true : false;
 
@@ -11,6 +12,11 @@ const UserProfile = (function() {
         if(isLoggedIn()) return;
         localStorage.setItem('userData', JSON.stringify({username: user, email: email, token}));
         username = user;
+        userToken = token;
+    }
+
+    const getToken = function() {
+        return userToken;
     }
   
     const getUsername = function() {
@@ -23,6 +29,7 @@ const UserProfile = (function() {
       isLoggedIn,
       logout,
       createSession,
+      getToken,
     }
   
   })();

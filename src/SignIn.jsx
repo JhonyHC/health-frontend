@@ -12,14 +12,18 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import {Link as RouterLink} from 'react-router-dom';
+import {Link as RouterLink, useNavigate} from 'react-router-dom';
+import UserProfile from './helpers/UserProfile';
+import { useState } from 'react';
+import { Alert, AlertTitle } from '@mui/material';
+import toast from 'react-hot-toast';
 
 function Copyright(props) {
   return (
     <Typography variant="body2" color="text.secondary" align="center" {...props}>
       {'Copyright © '}
       <Link color="inherit" href="https://mui.com/">
-        Your Website
+        Health App
       </Link>{' '}
       {new Date().getFullYear()}
       {'.'}
@@ -32,14 +36,55 @@ function Copyright(props) {
 const defaultTheme = createTheme();
 
 export default function SignIn() {
-  const handleSubmit = (event) => {
+  const navigate = useNavigate();
+  const [error, setError] = useState(null);
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    }, data);
+    const userData = {
+          email: data.get('email'),
+          password: data.get('password'),
+    };
+
+    try {
+        setError(null);
+        const res = await fetch('http://localhost:8080/auth', {
+            method: 'POST',
+            mode: 'cors',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(userData)
+        });
+        console.log(res);
+        if(res.status >= 400) {
+            const resJson = await res.json();
+            console.log(resJson);
+            setError(createErrorContent(resJson));
+            return;
+        }
+        if(res.status === 200) {
+            toast.success("¡Bienvenido!")
+            const {token} = await res.json();
+            UserProfile.createSession("", userData.email, token);
+            navigate('/');
+        }
+
+    } catch (err) {
+        console.log(err);
+    }
+    
   };
+
+  const createErrorContent = (err) => {
+    return (
+        <Alert severity="error">
+        <AlertTitle>Error</AlertTitle>
+          <Typography> {err.message} </Typography>
+        </Alert>
+    )
+  }
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -80,10 +125,10 @@ export default function SignIn() {
               id="password"
               autoComplete="current-password"
             />
-            <FormControlLabel
+            {/* <FormControlLabel
               control={<Checkbox value="remember" color="primary" />}
               label="Remember me"
-            />
+            /> */}
             <Button
               type="submit"
               fullWidth
@@ -92,12 +137,13 @@ export default function SignIn() {
             >
               Sign In
             </Button>
+            {error}
             <Grid container>
-              <Grid item xs>
+              {/* <Grid item xs>
                 <Link href="#" variant="body2">
                   Forgot password?
                 </Link>
-              </Grid>
+              </Grid> */}
               <Grid item>
                 <Link component={RouterLink} to="/signup" variant="body2">
                   {"Don't have an account? Sign Up"}

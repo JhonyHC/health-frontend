@@ -13,7 +13,6 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 import UserProfile from './helpers/UserProfile';
-import { redirect } from 'react-router-dom';
 
 const pages = ['Inicio', 'Comunidad', 'Mi Salud'];
 const settings = [
