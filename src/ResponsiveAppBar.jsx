@@ -13,15 +13,16 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 import UserProfile from './helpers/UserProfile';
+import { redirect } from 'react-router-dom';
 
 const pages = ['Inicio', 'Comunidad', 'Mi Salud'];
 const settings = [
   {name: 'Perfil', onClick: () => {}},
   {name: 'Historial', onClick: () => {}},
-  {name: 'Cerrar sesión', onClick: () => {UserProfile.logout();window.location.reload()}}
+  {name: 'Cerrar sesión', onClick: () => {UserProfile.logout()}}
 ];
 
-function ResponsiveAppBar() {
+function ResponsiveAppBar({setIsLogged}) {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
 
@@ -36,8 +37,10 @@ function ResponsiveAppBar() {
     setAnchorElNav(null);
   };
 
-  const handleCloseUserMenu = (event, itemFunction) => {
-    console.log(event);
+  const handleCloseUserMenu = (settingName, settingFunction) => {
+    typeof settingFunction === 'function' && settingFunction();
+    settingName === 'Cerrar sesión' && setIsLogged(false);
+
     setAnchorElUser(null);
   };
 
@@ -154,8 +157,8 @@ function ResponsiveAppBar() {
               onClose={handleCloseUserMenu}
             >
               {settings.map((setting) => (
-                <MenuItem key={setting.name} onClick={handleCloseUserMenu}>
-                  <Typography onClick={setting.onClick} textAlign="center">{setting.name}</Typography>
+                <MenuItem key={setting.name} onClick={()=>handleCloseUserMenu(setting.name, setting.onClick)}>
+                  <Typography textAlign="center">{setting.name}</Typography>
                 </MenuItem>
               ))}
             </Menu>

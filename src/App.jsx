@@ -5,12 +5,11 @@ import UserProfile from './helpers/UserProfile';
 
 
 function App() {
-
-  const isLogged = UserProfile.isLoggedIn();
+  const [isLogged, setIsLogged] = useState(UserProfile.isLoggedIn());
 
 
   return (
-    isLogged ? <AppLayout /> : <Landing />
+    isLogged ? <AppLayout setIsLogged={setIsLogged} /> : <Landing />
   );
 }
 

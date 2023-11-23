@@ -9,7 +9,7 @@ const UserProfile = (function() {
 
     const createSession = function(user, email, token) {
         if(isLoggedIn()) return;
-        localStorage.setItem('userData', JSON.stringify({username: username, email: email, token}));
+        localStorage.setItem('userData', JSON.stringify({username: user, email: email, token}));
         username = user;
     }
   
