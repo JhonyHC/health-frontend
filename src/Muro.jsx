@@ -53,6 +53,7 @@ const MuroFacebook = () => {
                 {/* Aquí puedes mostrar las publicaciones del usuario */}
                 <Typography variant="body2" color="textSecondary" component="p">
                   Contenido de la publicación...
+                  Lorem ipsum dolor sit, amet consectetur adipisicing elit. Repellendus obcaecati non, odit dolorum cupiditate voluptas culpa sed labore nobis in. Quia repellendus laborum amet reiciendis, distinctio eos fugiat veniam! Voluptas.
                 </Typography>
               </CardContent>
             </Card>
@@ -67,6 +68,7 @@ const MuroFacebook = () => {
                 {/* Aquí puedes mostrar las publicaciones del usuario */}
                 <Typography variant="body2" color="textSecondary" component="p">
                   Contenido de la publicación...
+                  Lorem ipsum dolor sit, amet consectetur adipisicing elit. Repellendus obcaecati non, odit dolorum cupiditate voluptas culpa sed labore nobis in. Quia repellendus laborum amet reiciendis, distinctio eos fugiat veniam! Voluptas.
                 </Typography>
               </CardContent>
             </Card>
@@ -81,6 +83,7 @@ const MuroFacebook = () => {
                 {/* Aquí puedes mostrar las publicaciones del usuario */}
                 <Typography variant="body2" color="textSecondary" component="p">
                   Contenido de la publicación...
+                  Lorem ipsum dolor sit, amet consectetur adipisicing elit. Repellendus obcaecati non, odit dolorum cupiditate voluptas culpa sed labore nobis in. Quia repellendus laborum amet reiciendis, distinctio eos fugiat veniam! Voluptas.
                 </Typography>
               </CardContent>
             </Card>
@@ -90,14 +93,14 @@ const MuroFacebook = () => {
           <Grid item xs={12} md={4}>
             {/* Lista de Seguidores */}
             <Card>
-              <CardHeader title="Seguidores" />
+              <CardHeader title="Comunidad" />
               <CardContent>
                 {/* Aquí puedes mostrar la lista de seguidores */}
                 <Typography variant="body2" color="textSecondary" component="p">
-                  Seguidor 1
+                 Nuevas Publicaciones: Los Chinos
                 </Typography>
                 <Typography variant="body2" color="textSecondary" component="p">
-                  Seguidor 1
+                Nuevas Publicaciones: Viva chivas team
                 </Typography>
 
                 {/* Repite este bloque para más seguidores */}
@@ -105,14 +108,14 @@ const MuroFacebook = () => {
             </Card>
             <br />
             <Card>
-              <CardHeader title="Seguidores" />
+              <CardHeader title="Proximas metas" />
               <CardContent>
                 {/* Aquí puedes mostrar la lista de seguidores */}
                 <Typography variant="body2" color="textSecondary" component="p">
-                  Seguidor 1
+                  4 km
                 </Typography>
                 <Typography variant="body2" color="textSecondary" component="p">
-                  Seguidor 1
+                  Bajar 2 kg
                 </Typography>
 
                 {/* Repite este bloque para más seguidores */}

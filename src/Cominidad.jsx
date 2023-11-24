@@ -65,57 +65,42 @@ const Profile = () => {
   };
 
   return (
-    <Card>
+    <div>
+      
+      <Card>
       <CardHeader
         avatar={<Avatar src="URL_DE_LA_IMAGEN_DEL_PERFIL" />}
         title="Nombre del Usuario"
         subheader="Usuario@facebook.com"
       />
-      <Divider />
+   
       <CardContent>
         <Typography variant="body2" color="textSecondary" component="p">
           Descripción del perfil. Puedes agregar cualquier información adicional aquí.
         </Typography>
       </CardContent>
-      <Divider />
+
       <CardContent>
         <Typography variant="body2" color="textSecondary" component="p">
           Amigos: 500
         </Typography>
       </CardContent>
-      <Divider />
-      {/* Sección de Publicaciones */}
       <CardContent>
-        <Typography variant="h6" gutterBottom>
-          Publicaciones
-        </Typography>
-        {/* Lista de Publicaciones */}
-        {publicaciones.map((publicacion, index) => (
-          <Card key={index} style={{ marginBottom: '16px' }}>
-            <CardHeader
-              title={publicacion.titulo}
-              subheader={`Publicado el ${publicacion.fechaCreacion}`}
-            />
-            <CardContent>
-              <Typography variant="body2" color="textSecondary" component="p">
-                {publicacion.contenido}
-              </Typography>
-            </CardContent>
-            <CardActions>
-              <Button
-                color="primary"
-                variant="contained"
-                onClick={() => handleMeGustaClick(index)}
-              >
-                Me gusta ({publicacion.likes})
-              </Button>
-            </CardActions>
-          </Card>
-        ))}
+        <Button variant="contained" color="primary">
+          Unirse a la Comunidad
+        </Button>
       </CardContent>
-      <Divider />
-      {/* Formulario para Añadir Publicación */}
-      <CardContent>
+     
+    
+   
+   
+   
+
+
+    </Card>
+    <br />
+    <Card>
+    <CardContent>
         <Typography variant="h6" gutterBottom>
           Añadir Publicación
         </Typography>
@@ -143,14 +128,40 @@ const Profile = () => {
           </Button>
         </form>
       </CardContent>
-      <Divider />
-      {/* Botón "Unirse a la Comunidad" */}
-      <CardContent>
-        <Button variant="contained" color="primary">
-          Unirse a la Comunidad
-        </Button>
+        </Card>
+    <br />
+    <Card>
+    <CardContent>
+        <Typography variant="h6" gutterBottom>
+          Publicaciones
+        </Typography>
+        {/* Lista de Publicaciones */}
+        {publicaciones.map((publicacion, index) => (
+          <Card key={index} style={{ marginBottom: '16px' }}>
+            <CardHeader
+              title={publicacion.titulo}
+              subheader={`Publicado el ${publicacion.fechaCreacion}`}
+            />
+            <CardContent>
+              <Typography variant="body2" color="textSecondary" component="p">
+                {publicacion.contenido}
+              </Typography>
+            </CardContent>
+            <CardActions>
+              <Button
+                color="primary"
+                variant="contained"
+                onClick={() => handleMeGustaClick(index)}
+              >
+                Me gusta ({publicacion.likes})
+              </Button>
+            </CardActions>
+          </Card>
+        ))}
       </CardContent>
+      
     </Card>
+    </div>
   );
 };
 
