@@ -37,39 +37,7 @@ const MuroFacebook = () => {
     <div style={{ display: 'flex' }}>
       <CssBaseline />
 
-      <Drawer
-        variant="permanent"
-        sx={{
-          width: 240,
-          flexShrink: 0,
-          [`& .MuiDrawer-paper`]: { width: 240, boxSizing: 'border-box' },
-        }}
-        open={open}
-      >
-        <Toolbar>
-          <IconButton onClick={handleDrawerClose}>
-            <ChevronLeftIcon />
-          </IconButton>
-        </Toolbar>
-        <Divider />
-        <List>
-          <ListItem button>
-            <ListItemIcon>
-              <PeopleAltIcon />
-            </ListItemIcon>
-            <ListItemText primary="Seguidores" />
-            <ListItemText primary="dddddd" />
-          </ListItem>
-          <ListItem button>
-            <ListItemIcon>
-              <PeopleAltIcon />
-            </ListItemIcon>
-            <ListItemText primary="ddddfefeffe" />
-            <ListItemText primary="dddddd" />
-          </ListItem>
-          {/* Agrega más opciones según tus necesidades */}
-        </List>
-      </Drawer>
+      
       <Container component="main" sx={{ flexGrow: 1, padding: '20px' }}>
         <Toolbar />
         <Grid container spacing={2}>
