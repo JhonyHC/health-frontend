@@ -1,12 +1,12 @@
 import { Stack } from "@mui/material";
 import BasicCard from "../BasicCard";
+import MuroFacebook from "../Muro";
 
 const Inicio = () => {
     return (
-        <Stack spacing={4}>
-            <BasicCard></BasicCard>
-            <BasicCard></BasicCard>
-          </Stack>
+        <div>
+            <MuroFacebook></MuroFacebook>
+        </div>
     );
 };
 
