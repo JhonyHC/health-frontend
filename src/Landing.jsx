@@ -17,7 +17,7 @@ function Landing() {
         <Stack alignItems="center" spacing={3}>
           <Box>
             <Typography variant="h2" textAlign="center">
-              Bienvenido a Health App
+              Bienvenido a VitaVibe
             </Typography>
             <Typography variant="subtitle1" textAlign="center">
               Una red social de salud y ejercicio.

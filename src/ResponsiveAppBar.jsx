@@ -13,11 +13,16 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 import UserProfile from './helpers/UserProfile';
+import { Link as RouterLink} from 'react-router-dom';
 
-const pages = ['Inicio', 'Comunidad', 'Mi Salud'];
+const pages = [
+  { name: 'Inicio', url: '/' },
+  { name: 'Comunidad', url: '/comunidad'},
+  { name: 'Mi Salud', url: '/salud' },
+];
 const settings = [
-  { name: 'Perfil', onClick: () => {} },
-  { name: 'Historial', onClick: () => {} },
+  { name: 'Perfil', onClick: () => { } },
+  { name: 'Historial', onClick: () => { } },
   {
     name: 'Cerrar sesión',
     onClick: () => {
@@ -68,7 +73,7 @@ function ResponsiveAppBar({ setIsLogged }) {
               textDecoration: 'none',
             }}
           >
-            HEALTH APP
+            VitaVibe
           </Typography>
 
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
@@ -101,8 +106,8 @@ function ResponsiveAppBar({ setIsLogged }) {
               }}
             >
               {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center">{page}</Typography>
+                <MenuItem component={RouterLink} to={page.url} key={page.name} onClick={handleCloseNavMenu}>
+                  <Typography textAlign="center">{page.name}</Typography>
                 </MenuItem>
               ))}
             </Menu>
@@ -124,7 +129,7 @@ function ResponsiveAppBar({ setIsLogged }) {
               textDecoration: 'none',
             }}
           >
-            HEALTH APP
+            VitaVibe
           </Typography>
           <Box
             sx={{
@@ -135,11 +140,12 @@ function ResponsiveAppBar({ setIsLogged }) {
           >
             {pages.map((page) => (
               <Button
-                key={page}
+                component={RouterLink} to={page.url}
+                key={page.name}
                 onClick={handleCloseNavMenu}
                 sx={{ my: 2, color: 'white', display: 'block' }}
               >
-                {page}
+                {page.name}
               </Button>
             ))}
           </Box>

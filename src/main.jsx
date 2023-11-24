@@ -9,11 +9,22 @@ import App from './App.jsx';
 import SignIn from './SignIn.jsx';
 import SignUp from './SignUp.jsx';
 import { Toaster } from 'react-hot-toast';
+import Inicio from './components/Inicio.jsx';
+import Comunidad from './components/Comunidad.jsx';
+import Salud from './components/Salud.jsx';
+import ErrorPage from './ErrorPage.jsx';
+
 
 const router = createBrowserRouter([
   {
     path: '/',
     element: <App />,
+    children: [
+      { index: true, element: <Inicio/> },
+      { path: 'comunidad', element: <Comunidad/> },
+      { path: 'salud', element: <Salud/> },
+    ],
+    errorElement: <ErrorPage />,
   },
   {
     path: '/signin',

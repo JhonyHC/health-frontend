@@ -1,6 +1,6 @@
-import { Box, Container, CssBaseline, Stack } from '@mui/material';
+import { Box, Container, CssBaseline } from '@mui/material';
 import ResponsiveAppBar from './ResponsiveAppBar';
-import BasicCard from './BasicCard';
+import { Outlet } from 'react-router-dom';
 
 function AppLayout({ setIsLogged }) {
   return (
@@ -9,11 +9,7 @@ function AppLayout({ setIsLogged }) {
         <CssBaseline />
         <ResponsiveAppBar setIsLogged={setIsLogged} />
         <Container maxWidth="md" sx={{ pt: '30px' }}>
-          <Stack spacing={4}>
-            <BasicCard></BasicCard>
-            <BasicCard></BasicCard>
-            <BasicCard></BasicCard>
-          </Stack>
+          <Outlet />
         </Container>
       </Box>
     </div>
