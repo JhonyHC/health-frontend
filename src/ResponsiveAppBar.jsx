@@ -16,12 +16,17 @@ import UserProfile from './helpers/UserProfile';
 
 const pages = ['Inicio', 'Comunidad', 'Mi Salud'];
 const settings = [
-  {name: 'Perfil', onClick: () => {}},
-  {name: 'Historial', onClick: () => {}},
-  {name: 'Cerrar sesión', onClick: () => {UserProfile.logout()}}
+  { name: 'Perfil', onClick: () => {} },
+  { name: 'Historial', onClick: () => {} },
+  {
+    name: 'Cerrar sesión',
+    onClick: () => {
+      UserProfile.logout();
+    },
+  },
 ];
 
-function ResponsiveAppBar({setIsLogged}) {
+function ResponsiveAppBar({ setIsLogged }) {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
 
@@ -121,7 +126,13 @@ function ResponsiveAppBar({setIsLogged}) {
           >
             HEALTH APP
           </Typography>
-          <Box sx={{ display: { xs: 'none', md: 'flex' }, marginLeft: "auto", marginRight: '20px' }}>
+          <Box
+            sx={{
+              display: { xs: 'none', md: 'flex' },
+              marginLeft: 'auto',
+              marginRight: '20px',
+            }}
+          >
             {pages.map((page) => (
               <Button
                 key={page}
@@ -156,7 +167,12 @@ function ResponsiveAppBar({setIsLogged}) {
               onClose={handleCloseUserMenu}
             >
               {settings.map((setting) => (
-                <MenuItem key={setting.name} onClick={()=>handleCloseUserMenu(setting.name, setting.onClick)}>
+                <MenuItem
+                  key={setting.name}
+                  onClick={() =>
+                    handleCloseUserMenu(setting.name, setting.onClick)
+                  }
+                >
                   <Typography textAlign="center">{setting.name}</Typography>
                 </MenuItem>
               ))}

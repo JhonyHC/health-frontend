@@ -10,88 +10,82 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import {Link as RouterLink, useNavigate} from 'react-router-dom';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { Alert, AlertTitle } from '@mui/material';
 import toast from 'react-hot-toast';
 import UserProfile from './helpers/UserProfile';
-
 
 // TODO remove, this demo shouldn't need to reset the theme.
 
 const defaultTheme = createTheme();
 
 export default function SignUp() {
-    const navigate = useNavigate();
-    const [error, setError] = useState(null);
+  const navigate = useNavigate();
+  const [error, setError] = useState(null);
 
-    const getToken = async (email, password) => {
-        const res = await fetch('http://localhost:8080/auth', {
-            method: 'POST',
-            mode: 'cors',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({email, password})
-        });
-        const {token} = await res.json();
-        return token;
-    }
+  const getToken = async (email, password) => {
+    const res = await fetch('http://localhost:8080/auth', {
+      method: 'POST',
+      mode: 'cors',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email, password }),
+    });
+    const { token } = await res.json();
+    return token;
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     const userData = {
-        username: data.get('username'),
-          email: data.get('email'),
-          password: data.get('password'),
-        };
+      username: data.get('username'),
+      email: data.get('email'),
+      password: data.get('password'),
+    };
 
     try {
-        setError(null);
-        const res = await fetch('http://localhost:8080/usuarios/usuario', {
-            method: 'POST',
-            mode: 'cors',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(userData)
-        });
-        console.log(res);
-        if(res.status >= 400) {
-            const resJson = await res.json();
-            console.log(resJson);
-            setError(createErrorContent(resJson));
-            return;
-        }
-        if(res.status === 201) {
-            toast.success("Cuenta creada 😃")
-            const {username, email, password} = await res.json();
-            const token = await getToken(email, password);
-            UserProfile.createSession(username, email, token);
-            navigate('/');
-        }
-
+      setError(null);
+      const res = await fetch('http://localhost:8080/usuarios/usuario', {
+        method: 'POST',
+        mode: 'cors',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(userData),
+      });
+      console.log(res);
+      if (res.status >= 400) {
+        const resJson = await res.json();
+        console.log(resJson);
+        setError(createErrorContent(resJson));
+        return;
+      }
+      if (res.status === 201) {
+        toast.success('Cuenta creada 😃');
+        const { username, email, password } = await res.json();
+        const token = await getToken(email, password);
+        UserProfile.createSession(username, email, token);
+        navigate('/');
+      }
     } catch (err) {
-        console.log(err);
+      console.log(err);
     }
-    
-
   };
 
   const createErrorContent = (err) => {
     return (
-        <Alert severity="error">
+      <Alert severity="error">
         <AlertTitle>Error - {err.message}</AlertTitle>
-        {
-            err.details?.map((detail, index) => {
-                console.log(detail);
-                return <Typography key={index}>- {detail.message} </Typography>
-            })  
-        }
-        </Alert>
-    )
-  }
+        {err.details?.map((detail, index) => {
+          console.log(detail);
+          return <Typography key={index}>- {detail.message} </Typography>;
+        })}
+      </Alert>
+    );
+  };
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -111,7 +105,7 @@ export default function SignUp() {
           <Typography component="h1" variant="h5">
             Sign up
           </Typography>
-          <Box component="form" onSubmit={handleSubmit}  sx={{ mt: 1 }}>
+          <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
             <TextField
               margin="normal"
               required
@@ -152,7 +146,7 @@ export default function SignUp() {
             <Grid container>
               <Grid item>
                 <Link component={RouterLink} to="/signin" variant="body2">
-                  {"Already have an account? Sign in"}
+                  {'Already have an account? Sign in'}
                 </Link>
               </Grid>
             </Grid>
