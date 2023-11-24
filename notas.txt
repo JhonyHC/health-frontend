@@ -1,0 +1,33 @@
+ {
+    path: '/dieta',
+    element: <DietList />,
+  },
+  {
+    path: '/grupo',
+    element: <GroupComponent />,
+  },
+  {
+    path: '/ejercicio',
+    element: <ExerciseComponent />,
+  },
+  {
+    path: '/historial',
+    element: <HistoryComponent />,
+  },
+  {
+    path: '/meta',
+    element: <GoalComponent />,
+  },
+  {
+    path: '/metrica',
+    element: <MetricComponent />,
+  },
+  {
+    path: '/comunidad',
+    element: <Profile />,
+  },
+  {
+    path: '/muro',
+    element: <MuroFacebook />,
+  },
+

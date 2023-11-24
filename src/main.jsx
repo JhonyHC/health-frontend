@@ -15,14 +15,56 @@ import Salud from './components/Salud.jsx';
 import ErrorPage from './ErrorPage.jsx';
 
 
+import DietList from './Dieta.jsx';
+import GroupComponent from './Group.jsx';
+import ExerciseComponent from './Ejercicio.jsx';
+import HistoryComponent from './Historial.jsx';
+import GoalComponent from './Meta.jsx';
+import MetricComponent from './Metrica.jsx';
+import Profile from './Cominidad.jsx';
+import MuroFacebook from './Muro.jsx';
+
+
 const router = createBrowserRouter([
   {
     path: '/',
     element: <App />,
     children: [
       { index: true, element: <Inicio/> },
-      { path: 'comunidad', element: <Comunidad/> },
+      
       { path: 'salud', element: <Salud/> },
+      {
+        path: '/dieta',
+        element: <DietList />,
+      },
+      {
+        path: '/grupo',
+        element: <GroupComponent />,
+      },
+      {
+        path: '/ejercicio',
+        element: <ExerciseComponent />,
+      },
+      {
+        path: '/historial',
+        element: <HistoryComponent />,
+      },
+      {
+        path: '/meta',
+        element: <GoalComponent />,
+      },
+      {
+        path: '/metrica',
+        element: <MetricComponent />,
+      },
+      {
+        path: '/comunidad',
+        element: <Profile />,
+      },
+      {
+        path: '/muro',
+        element: <MuroFacebook />,
+      },
     ],
     errorElement: <ErrorPage />,
   },

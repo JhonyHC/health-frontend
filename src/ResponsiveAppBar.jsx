@@ -16,9 +16,14 @@ import UserProfile from './helpers/UserProfile';
 import { Link as RouterLink} from 'react-router-dom';
 
 const pages = [
-  { name: 'Inicio', url: '/' },
-  { name: 'Comunidad', url: '/comunidad'},
-  { name: 'Mi Salud', url: '/salud' },
+  { name: 'Muro', url: '/muro' },
+  { name: 'Dieta', url: '/dieta' },
+  { name: 'Grupo', url: '/grupo'},
+  { name: 'Ejercicio', url: '/ejercicio' },
+  { name: 'Historial', url: '/historial' },
+  { name: 'Meta', url: '/meta' },
+  { name: 'Metrica', url: '/metrica' },
+  { name: 'Comunidad', url: '/comunidad' },
 ];
 const settings = [
   { name: 'Perfil', onClick: () => { } },
