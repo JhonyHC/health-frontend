@@ -16,7 +16,7 @@ import UserProfile from './helpers/UserProfile';
 import { Link as RouterLink} from 'react-router-dom';
 
 const pages = [
-  { name: 'Muro', url: '/muro' },
+  { name: 'Muro', url: '/' },
   { name: 'Dieta', url: '/dieta' },
   { name: 'Grupo', url: '/grupo'},
   { name: 'Ejercicio', url: '/ejercicio' },

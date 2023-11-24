@@ -9,20 +9,17 @@ import App from './App.jsx';
 import SignIn from './SignIn.jsx';
 import SignUp from './SignUp.jsx';
 import { Toaster } from 'react-hot-toast';
-import Inicio from './components/Inicio.jsx';
-import Comunidad from './components/Comunidad.jsx';
-import Salud from './components/Salud.jsx';
 import ErrorPage from './ErrorPage.jsx';
 
 
-import DietList from './Dieta.jsx';
-import GroupComponent from './Group.jsx';
-import ExerciseComponent from './Ejercicio.jsx';
-import HistoryComponent from './Historial.jsx';
-import GoalComponent from './Meta.jsx';
-import MetricComponent from './Metrica.jsx';
-import Profile from './Cominidad.jsx';
-import MuroFacebook from './Muro.jsx';
+import DietList from './components/Dieta.jsx';
+import GroupComponent from './components/Group.jsx';
+import ExerciseComponent from './components/Ejercicio.jsx';
+import HistoryComponent from './components/Historial.jsx';
+import GoalComponent from './components/Meta.jsx';
+import MetricComponent from './components/Metrica.jsx';
+import Profile from './components/Cominidad.jsx';
+import MuroFacebook from './components/Muro.jsx';
 
 
 const router = createBrowserRouter([
@@ -30,9 +27,7 @@ const router = createBrowserRouter([
     path: '/',
     element: <App />,
     children: [
-      { index: true, element: <Inicio/> },
-      
-      { path: 'salud', element: <Salud/> },
+      { index: true, element: <MuroFacebook/> },
       {
         path: '/dieta',
         element: <DietList />,
@@ -60,10 +55,6 @@ const router = createBrowserRouter([
       {
         path: '/comunidad',
         element: <Profile />,
-      },
-      {
-        path: '/muro',
-        element: <MuroFacebook />,
       },
     ],
     errorElement: <ErrorPage />,
