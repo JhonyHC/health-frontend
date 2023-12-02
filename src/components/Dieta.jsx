@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import {
   AppBar,
   Toolbar,
@@ -18,8 +18,9 @@ import {
 import AddIcon from '@mui/icons-material/Add';
 import { Formik, Form, Field } from 'formik';
 import { Select, TextField } from 'formik-mui';
+import dietaSchema from '../validations/dietaSchema';
 
-const initialEntry = {
+const initialValues = {
   nombre: '',
   descripcion: '',
   tipoDieta: '',
@@ -119,19 +120,16 @@ const DietList = () => {
         <DialogTitle>Agregar Entrada de Dieta</DialogTitle>
         <DialogContent >
           <Formik
-            initialValues={{
-              nombre: '',
-              descripcion: '',
-              tipoDieta: '',
-              calorias: '',
-              proteinas: '',
-              carbohidratos: '',
-              grasas: '',
-              fibra: '',
-              imagen: '',
-            }}
+            initialValues={initialValues}
             validate={(values) => {
               const errors = {};
+              const validation = dietaSchema.validate(values)
+              if(validation.error){
+                console.log(validation)
+                validation.error.details.forEach((err) => {
+                  errors[err.context.label] = err.message;
+                });
+              }
 
               return errors;
             }}
@@ -146,7 +144,7 @@ const DietList = () => {
           >
             {({ submitForm, isSubmitting }) => (
               <Form>
-                <Stack spacing={2}>
+                <Stack spacing={2} mt={1}>
                   <Field
                     component={TextField}
                     name="nombre"
