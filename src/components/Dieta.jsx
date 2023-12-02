@@ -12,10 +12,12 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  MenuItem,
+  Stack,
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { Formik, Form, Field } from 'formik';
-import { TextField } from 'formik-mui';
+import { Select, TextField } from 'formik-mui';
 
 const initialEntry = {
   nombre: '',
@@ -52,6 +54,20 @@ const initialData = [
     fibra: '4g',
     imagen: 'url_imagen_2',
   },
+];
+
+const tiposDieta = [
+  'Mediteránea',
+  'DASH',
+  'Flexitariana',
+  'Vegana',
+  'Vegetariana',
+  'Paleo',
+  'Cetogénica',
+  'Sin Gluten',
+  'Baja en Carbohidratos',
+  'Baja en Grasas',
+  'Otra',
 ];
 
 const DietList = () => {
@@ -99,9 +115,9 @@ const DietList = () => {
         ))}
       </List>
 
-      <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
+      <Dialog open={openDialog} fullWidth maxWidth="sm" onClose={() => setOpenDialog(false)}>
         <DialogTitle>Agregar Entrada de Dieta</DialogTitle>
-        <DialogContent>
+        <DialogContent >
           <Formik
             initialValues={{
               nombre: '',
@@ -130,73 +146,87 @@ const DietList = () => {
           >
             {({ submitForm, isSubmitting }) => (
               <Form>
-                <Field
-                  component={TextField}
-                  name="nombre"
-                  label="Nombre"
-                  type="text"
-                  fullWidth
-                />
-                <Field
-                  component={TextField}
-                  name="descripcion"
-                  label="Descripción"
-                  type="text"
-                  fullWidth
-                />
-                <Field
+                <Stack spacing={2}>
+                  <Field
+                    component={TextField}
+                    name="nombre"
+                    label="Nombre"
+                    type="text"
+                    fullWidth
+                  />
+                  <Field
+                    component={TextField}
+                    name="descripcion"
+                    label="Descripción"
+                    type="text"
+                    fullWidth
+                  />
+                  {/* <Field
                   component={TextField}
                   name="tipoDieta"
                   label="Tipo de Dieta"
                   type="text"
                   fullWidth
-                />
-                <Field
-                  component={TextField}
-                  name="calorias"
-                  label="Calorías"
-                  type="number"
-                  fullWidth
-                />
-                <Field
-                  component={TextField}
-                  name="proteinas"
-                  label="Proteínas"
-                  type="number"
-                  fullWidth
-                />
-                <Field
-                  component={TextField}
-                  label="Carbohidratos"
-                  name="carbohidratos"
-                  type="number"
-                  fullWidth
-                />
-                <Field
-                  component={TextField}
-                  name="grasas"
-                  label="Grasas"
-                  type="number"
-                  fullWidth
-                />
-                <Field
-                  component={TextField}
-                  name="fibra"
-                  label="Fibra"
-                  type="number"
-                  fullWidth
-                />
-                <Field
-                  component={TextField}
-                  name="url"
-                  label="Imagen (URL)"
-                  type="url"
-                  fullWidth
-                />
-                <Button variant="contained"
-                  color="primary"
-                  disabled={isSubmitting}
-                  onClick={submitForm}>Agregar</Button>
+                /> */}
+                  <Field
+                    component={Select}
+                    name="tipoDieta"
+                    label="Tipo de Dieta"
+                    sx={{ width: "100%" }}
+                  >
+                    {
+                      tiposDieta.map((tipoDieta) => (
+                        <MenuItem key={tipoDieta} value={tipoDieta}>{tipoDieta}</MenuItem>
+                      ))
+                    }
+                  </Field>
+                  <Field
+                    component={TextField}
+                    name="calorias"
+                    label="Calorías"
+                    type="number"
+                    fullWidth
+                  />
+                  <Field
+                    component={TextField}
+                    name="proteinas"
+                    label="Proteínas"
+                    type="number"
+                    fullWidth
+                  />
+                  <Field
+                    component={TextField}
+                    label="Carbohidratos"
+                    name="carbohidratos"
+                    type="number"
+                    fullWidth
+                  />
+                  <Field
+                    component={TextField}
+                    name="grasas"
+                    label="Grasas"
+                    type="number"
+                    fullWidth
+                  />
+                  <Field
+                    component={TextField}
+                    name="fibra"
+                    label="Fibra"
+                    type="number"
+                    fullWidth
+                  />
+                  <Field
+                    component={TextField}
+                    name="url"
+                    label="Imagen (URL)"
+                    type="url"
+                    fullWidth
+                  />
+                  <Button variant="contained"
+                    color="primary"
+                    disabled={isSubmitting}
+                    onClick={submitForm}>Agregar</Button>
+                </Stack>
               </Form>
             )}
           </Formik>
