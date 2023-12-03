@@ -105,7 +105,7 @@ const GoalComponent = () => {
         ))}
       </List>
 
-      <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
+      <Dialog open={openDialog} fullWidth maxWidth="sm" onClose={() => setOpenDialog(false)}>
         <DialogTitle>Agregar Meta de Salud</DialogTitle>
         <DialogContent>
         <Formik

@@ -12,11 +12,14 @@ import {
   DialogActions,
   List,
   ListItem,
-  TextField,
+  Stack,
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
+import { Formik, Form, Field } from 'formik';
+import { Select, TextField } from 'formik-mui';
+import metricaSchema from '../validations/metricaSchema';
 
-const initialEntry = {
+const initialValues = {
   circunferenciaCintura: '',
   presionArterial: '',
   imc: '',
@@ -63,8 +66,7 @@ const MetricComponent = () => {
   const [entries, setEntries] = useState([]);
   const [openAddDialog, setOpenAddDialog] = useState(false);
   const [openDetailsDialog, setOpenDetailsDialog] = useState(false);
-  const [selectedEntry, setSelectedEntry] = useState(initialEntry);
-  const [newEntry, setNewEntry] = useState(initialEntry);
+  const [selectedEntry, setSelectedEntry] = useState(initialValues);
 
   useEffect(() => {
     // Mostrar datos iniciales al cargar el componente
@@ -88,20 +90,9 @@ const MetricComponent = () => {
     setOpenAddDialog(false);
   };
 
-  const handleInputChange = (field, value) => {
-    setNewEntry({ ...newEntry, [field]: value });
-  };
-
-  const handleAddEntry = () => {
-    setEntries([...entries, newEntry]);
-    setNewEntry(initialEntry);
-    setOpenAddDialog(false);
-  };
-
   return (
     <div>
     
-
       <Button
         variant="contained"
         startIcon={<AddIcon />}
@@ -193,82 +184,124 @@ const MetricComponent = () => {
       </Dialog>
 
       {/* Diálogo para agregar nueva métrica */}
-      <Dialog open={openAddDialog} onClose={handleCloseAddDialog}>
+      <Dialog open={openAddDialog} fullWidth maxWidth="sm" onClose={handleCloseAddDialog}>
         <DialogTitle>Agregar Métrica de Salud</DialogTitle>
         <DialogContent>
-          {/* Campos de entrada para agregar nueva métrica */}
-          <TextField
-            label="Circunferencia de Cintura"
-            fullWidth
-            value={newEntry.circunferenciaCintura}
-            onChange={(e) => handleInputChange('circunferenciaCintura', e.target.value)}
-          />
-          <TextField
-            label="Presión Arterial"
-            fullWidth
-            value={newEntry.presionArterial}
-            onChange={(e) => handleInputChange('presionArterial', e.target.value)}
-          />
-          <TextField
-            label="Índice de Masa Corporal (IMC)"
-            fullWidth
-            value={newEntry.imc}
-            onChange={(e) => handleInputChange('imc', e.target.value)}
-          />
-          <TextField
-            label="Peso"
-            fullWidth
-            value={newEntry.peso}
-            onChange={(e) => handleInputChange('peso', e.target.value)}
-          />
-          <TextField
-            label="Altura"
-            fullWidth
-            value={newEntry.altura}
-            onChange={(e) => handleInputChange('altura', e.target.value)}
-          />
-          <TextField
-            label="Frecuencia Cardíaca"
-            fullWidth
-            value={newEntry.frecuenciaCardiaca}
-            onChange={(e) => handleInputChange('frecuenciaCardiaca', e.target.value)}
-          />
-          <TextField
-            label="Temperatura Corporal"
-            fullWidth
-            value={newEntry.temperaturaCorporal}
-            onChange={(e) => handleInputChange('temperaturaCorporal', e.target.value)}
-          />
-          <TextField
-            label="Glucosa en Sangre"
-            fullWidth
-            value={newEntry.glucosaEnSangre}
-            onChange={(e) => handleInputChange('glucosaEnSangre', e.target.value)}
-          />
-          <TextField
-            label="Colesterol HDL"
-            fullWidth
-            value={newEntry.colesterolHDL}
-            onChange={(e) => handleInputChange('colesterolHDL', e.target.value)}
-          />
-          <TextField
-            label="Colesterol LDL"
-            fullWidth
-            value={newEntry.colesterolLDL}
-            onChange={(e) => handleInputChange('colesterolLDL', e.target.value)}
-          />
-          <TextField
-            label="Frecuencia Respiratoria"
-            fullWidth
-            value={newEntry.frecuenciaRespiratoria}
-            onChange={(e) => handleInputChange('frecuenciaRespiratoria', e.target.value)}
-          />
+        <Formik
+            initialValues={initialValues}
+            validate={(values) => {
+              const errors = {};
+              const validation = metricaSchema.validate(values);
+              if (validation.error) {
+                console.log(validation);
+                validation.error.details.forEach((err) => {
+                  errors[err.context.label] = err.message;
+                });
+              }
+
+              return errors;
+            }}
+            onSubmit={(values, { setSubmitting }) => {
+              setTimeout(() => {
+                setSubmitting(false);
+                alert(JSON.stringify(values, null, 2));
+                setEntries([...entries, values]);
+                setOpenAddDialog(false);
+              }, 500);
+            }}
+          >
+            {({ submitForm, isSubmitting }) => (
+              <Form>
+                <Stack spacing={2} mt={1}>
+                  <Field
+                    component={TextField}
+                    name="circunferenciaCintura"
+                    label="Circunferencia de Cintura (cm)"
+                    type="number"
+                    fullWidth
+                  />
+                  <Field
+                    component={TextField}
+                    name="presionArterial"
+                    label="Presión Arterial (mmHg)"
+                    type="text"
+                    fullWidth
+                  />
+                  <Field
+                    component={TextField}
+                    name="imc"
+                    label="Índice de Masa Corporal (IMC)"
+                    type="number"
+                    fullWidth
+                  />
+                  <Field
+                    component={TextField}
+                    name="peso"
+                    label="Peso (kg)"
+                    type="number"
+                    fullWidth
+                  />
+                  <Field
+                    component={TextField}
+                    name="altura"
+                    label="Altura (cm)"
+                    type="number"
+                    fullWidth
+                  />
+                  <Field
+                    component={TextField}
+                    name="frecuenciaCardiaca"
+                    label="Frecuencia Cardíaca (bpm)"
+                    type="number"
+                    fullWidth
+                  />
+                  <Field
+                    component={TextField}
+                    name="temperaturaCorporal"
+                    label="Temperatura Corporal (°C)"
+                    type="number"
+                    fullWidth
+                  />
+                  <Field
+                    component={TextField}
+                    name="glucosaEnSangre"
+                    label="Glucosa en Sangre (mg/dL)"
+                    type="number"
+                    fullWidth
+                  />
+                  <Field
+                    component={TextField}
+                    name="colesterolHDL"
+                    label="Colesterol HDL (mg/dL)"
+                    type="number"
+                    fullWidth
+                  />
+                  <Field
+                    component={TextField}
+                    name="colesterolLDL"
+                    label="Colesterol LDL (mg/dL)"
+                    type="number"
+                    fullWidth
+                  />
+                  <Field
+                    component={TextField}
+                    name="frecuenciaRespiratoria"
+                    label="Frecuencia Respiratoria (rpm)"
+                    type="number"
+                    fullWidth
+                  />
+                  <Button variant="contained"
+                    color="primary"
+                    disabled={isSubmitting}
+                    onClick={submitForm}>Agregar
+                  </Button>
+                </Stack>
+              </Form>
+            )}
+          </Formik>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseAddDialog}>Cancelar</Button>
-          <Button onClick={handleAddEntry} variant="contained" color="primary">
-            Agregar
-          </Button>
         </DialogActions>
       </Dialog>
     </div>
