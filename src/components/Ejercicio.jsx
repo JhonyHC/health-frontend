@@ -5,17 +5,20 @@ import {
   Button,
   Card,
   CardContent,
-  TextField,
   List,
   Typography,
   Dialog,
   DialogTitle,
   DialogContent,
   DialogActions,
+  Stack,
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
+import { Formik, Form, Field } from 'formik';
+import { Select, TextField } from 'formik-mui';
+import ejercicioSchema from '../validations/ejercicioSchema';
 
-const initialEntry = {
+const initialValues = {
   nombre: '',
   descripcion: '',
   tipoDeEjercicio: '',
@@ -55,26 +58,14 @@ const initialData = [
 const ExerciseComponent = () => {
   const [entries, setEntries] = useState([]);
   const [openDialog, setOpenDialog] = useState(false);
-  const [newEntry, setNewEntry] = useState(initialEntry);
 
   useEffect(() => {
     // Mostrar datos iniciales al cargar el componente
     setEntries(initialData);
   }, []);
 
-  const handleInputChange = (field, value) => {
-    setNewEntry({ ...newEntry, [field]: value });
-  };
-
-  const handleAddEntry = () => {
-    setEntries([...entries, newEntry]);
-    setNewEntry(initialEntry);
-    setOpenDialog(false);
-  };
-
   return (
     <div>
-    
 
       <Button
         variant="contained"
@@ -118,69 +109,112 @@ const ExerciseComponent = () => {
         ))}
       </List>
 
-      <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
+      <Dialog open={openDialog} fullWidth maxWidth="sm" onClose={() => setOpenDialog(false)}>
         <DialogTitle>Agregar Ejercicio</DialogTitle>
         <DialogContent>
-          <TextField
-            label="Nombre del Ejercicio"
-            fullWidth
-            value={newEntry.nombre}
-            onChange={(e) => handleInputChange('nombre', e.target.value)}
-          />
-          <TextField
-            label="Descripción"
-            fullWidth
-            value={newEntry.descripcion}
-            onChange={(e) => handleInputChange('descripcion', e.target.value)}
-          />
-          <TextField
-            label="Tipo de Ejercicio"
-            fullWidth
-            value={newEntry.tipoDeEjercicio}
-            onChange={(e) => handleInputChange('tipoDeEjercicio', e.target.value)}
-          />
-          <TextField
-            label="Duración Estimada"
-            fullWidth
-            value={newEntry.duracionEstimada}
-            onChange={(e) => handleInputChange('duracionEstimada', e.target.value)}
-          />
-          <TextField
-            label="Grupo Muscular Trabajado"
-            fullWidth
-            value={newEntry.grupoMuscularTrabajado}
-            onChange={(e) => handleInputChange('grupoMuscularTrabajado', e.target.value)}
-          />
-          <TextField
-            label="Nivel de Dificultad"
-            fullWidth
-            value={newEntry.nivelDeDificultad}
-            onChange={(e) => handleInputChange('nivelDeDificultad', e.target.value)}
-          />
-          <TextField
-            label="Calorías Quemadas"
-            fullWidth
-            value={newEntry.caloriasQuemadas}
-            onChange={(e) => handleInputChange('caloriasQuemadas', e.target.value)}
-          />
-          <TextField
-            label="Imagen del Ejercicio (URL)"
-            fullWidth
-            value={newEntry.imagenDelEjercicio}
-            onChange={(e) => handleInputChange('imagenDelEjercicio', e.target.value)}
-          />
-          <TextField
-            label="Imagen (URL)"
-            fullWidth
-            value={newEntry.imagen}
-            onChange={(e) => handleInputChange('imagen', e.target.value)}
-          />
+          <Formik
+            initialValues={initialValues}
+            validate={(values) => {
+              const errors = {};
+              const validation = ejercicioSchema.validate(values);
+              if (validation.error) {
+                console.log(validation);
+                validation.error.details.forEach((err) => {
+                  errors[err.context.label] = err.message;
+                });
+              }
+
+              return errors;
+            }}
+            onSubmit={(values, { setSubmitting }) => {
+              setTimeout(() => {
+                setSubmitting(false);
+                alert(JSON.stringify(values, null, 2));
+                setEntries([...entries, values]);
+                setOpenDialog(false);
+              }, 500);
+            }}
+          >
+            {({ submitForm, isSubmitting }) => (
+              <Form>
+                <Stack spacing={2} mt={1}>
+                  <Field
+                    component={TextField}
+                    name="nombre"
+                    label="Nombre del Ejercicio"
+                    type="text"
+                    fullWidth
+                  />
+                  <Field
+                    component={TextField}
+                    name="descripcion"
+                    label="Descripción"
+                    type="text"
+                    fullWidth
+                  />
+                  <Field
+                    component={TextField}
+                    name="tipoDeEjercicio"
+                    label="Tipo de Ejercicio"
+                    type="text"
+                    fullWidth
+                  />
+                  <Field
+                    component={TextField}
+                    name="duracionEstimada"
+                    label="Duración Estimada (minutos)"
+                    type="text"
+                    fullWidth
+                  />
+                  <Field
+                    component={TextField}
+                    name="grupoMuscularTrabajado"
+                    label="Grupo Muscular Trabajado"
+                    type="text"
+                    fullWidth
+                  />
+                  <Field
+                    component={TextField}
+                    name="nivelDeDificultad"
+                    label="Nivel de Dificultad"
+                    type="number"
+                    fullWidth
+                  />
+                  <Field
+                    component={TextField}
+                    name="caloriasQuemadas"
+                    label="Calorías Quemadas"
+                    type="number"
+                    fullWidth
+                  />
+                  <Field
+                    component={TextField}
+                    name="imagenDelEjercicio"
+                    label="Imagen del Ejercicio (URL)"
+                    type="text"
+                    fullWidth
+                  />
+                  <Field
+                    component={TextField}
+                    name="imagen"
+                    label="Imagen (URL)"
+                    type="text"
+                    fullWidth
+                  />
+                <Button variant="contained"
+                  color="primary"
+                  disabled={isSubmitting}
+                  onClick={submitForm}>
+                  Agregar
+                </Button>
+                </Stack>
+              </Form>
+            )}
+
+          </Formik>
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpenDialog(false)}>Cancelar</Button>
-          <Button onClick={handleAddEntry} variant="contained" color="primary">
-            Agregar
-          </Button>
         </DialogActions>
       </Dialog>
     </div>

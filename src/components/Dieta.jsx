@@ -123,9 +123,9 @@ const DietList = () => {
             initialValues={initialValues}
             validate={(values) => {
               const errors = {};
-              const validation = dietaSchema.validate(values)
-              if(validation.error){
-                console.log(validation)
+              const validation = dietaSchema.validate(values);
+              if (validation.error) {
+                console.log(validation);
                 validation.error.details.forEach((err) => {
                   errors[err.context.label] = err.message;
                 });
@@ -181,20 +181,20 @@ const DietList = () => {
                   <Field
                     component={TextField}
                     name="calorias"
-                    label="Calorías"
+                    label="Calorías (gramos)"
                     type="number"
                     fullWidth
                   />
                   <Field
                     component={TextField}
                     name="proteinas"
-                    label="Proteínas"
+                    label="Proteínas (gramos)"
                     type="number"
                     fullWidth
                   />
                   <Field
                     component={TextField}
-                    label="Carbohidratos"
+                    label="Carbohidratos (gramos)"
                     name="carbohidratos"
                     type="number"
                     fullWidth
@@ -202,14 +202,14 @@ const DietList = () => {
                   <Field
                     component={TextField}
                     name="grasas"
-                    label="Grasas"
+                    label="Grasas (gramos)"
                     type="number"
                     fullWidth
                   />
                   <Field
                     component={TextField}
                     name="fibra"
-                    label="Fibra"
+                    label="Fibra (gramos)"
                     type="number"
                     fullWidth
                   />
@@ -223,7 +223,8 @@ const DietList = () => {
                   <Button variant="contained"
                     color="primary"
                     disabled={isSubmitting}
-                    onClick={submitForm}>Agregar</Button>
+                    onClick={submitForm}>Agregar
+                  </Button>
                 </Stack>
               </Form>
             )}
