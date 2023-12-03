@@ -5,22 +5,28 @@ import {
   Button,
   Card,
   CardContent,
-  TextField,
   List,
   Typography,
   Dialog,
   DialogTitle,
   DialogContent,
   DialogActions,
+  MenuItem,
+  Stack,
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
+import { Formik, Form, Field } from 'formik';
+import { Select, TextField } from 'formik-mui';
+import metaSchema from '../validations/metaSchema';
 
-const initialEntry = {
+const today = new Date().toISOString().split('T')[0];
+
+const initialValues = {
   tipoMeta: '',
   valorMeta: '',
-  fechaLimite: '',
+  fechaLimite: today,
   descripcionMeta: '',
-  estadoMeta: '',
+  estadoMeta: 'Sin Comenzar',
   progreso: '',
 };
 
@@ -43,29 +49,23 @@ const initialData = [
   },
 ];
 
+const estadoMeta = [
+  'Sin Comenzar',
+  'En Progreso',
+  'Completado',
+];
+
 const GoalComponent = () => {
   const [entries, setEntries] = useState([]);
   const [openDialog, setOpenDialog] = useState(false);
-  const [newEntry, setNewEntry] = useState(initialEntry);
 
   useEffect(() => {
     // Mostrar datos iniciales al cargar el componente
     setEntries(initialData);
   }, []);
 
-  const handleInputChange = (field, value) => {
-    setNewEntry({ ...newEntry, [field]: value });
-  };
-
-  const handleAddEntry = () => {
-    setEntries([...entries, newEntry]);
-    setNewEntry(initialEntry);
-    setOpenDialog(false);
-  };
-
   return (
     <div>
-
 
       <Button
         variant="contained"
@@ -108,48 +108,91 @@ const GoalComponent = () => {
       <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
         <DialogTitle>Agregar Meta de Salud</DialogTitle>
         <DialogContent>
-          <TextField
-            label="Tipo de Meta"
-            fullWidth
-            value={newEntry.tipoMeta}
-            onChange={(e) => handleInputChange('tipoMeta', e.target.value)}
-          />
-          <TextField
-            label="Valor de la Meta"
-            fullWidth
-            value={newEntry.valorMeta}
-            onChange={(e) => handleInputChange('valorMeta', e.target.value)}
-          />
-          <TextField
-            label="Fecha Límite"
-            fullWidth
-            value={newEntry.fechaLimite}
-            onChange={(e) => handleInputChange('fechaLimite', e.target.value)}
-          />
-          <TextField
-            label="Descripción de la Meta"
-            fullWidth
-            value={newEntry.descripcionMeta}
-            onChange={(e) => handleInputChange('descripcionMeta', e.target.value)}
-          />
-          <TextField
-            label="Estado de la Meta"
-            fullWidth
-            value={newEntry.estadoMeta}
-            onChange={(e) => handleInputChange('estadoMeta', e.target.value)}
-          />
-          <TextField
-            label="Progreso"
-            fullWidth
-            value={newEntry.progreso}
-            onChange={(e) => handleInputChange('progreso', e.target.value)}
-          />
+        <Formik
+            initialValues={initialValues}
+            validate={(values) => {
+              const errors = {};
+              const validation = metaSchema.validate(values);
+              if (validation.error) {
+                console.log(validation);
+                validation.error.details.forEach((err) => {
+                  errors[err.context.label] = err.message;
+                });
+              }
+
+              return errors;
+            }}
+            onSubmit={(values, { setSubmitting }) => {
+              setTimeout(() => {
+                setSubmitting(false);
+                alert(JSON.stringify(values, null, 2));
+                setEntries([...entries, values]);
+                setOpenDialog(false);
+              }, 500);
+            }}
+          >
+            {({ submitForm, isSubmitting }) => (
+              <Form>
+                <Stack spacing={2} mt={1}>
+                  <Field
+                    component={TextField}
+                    name="tipoMeta"
+                    label="Tipo de Meta"
+                    type="text"
+                    fullWidth
+                  />
+                  <Field
+                    component={TextField}
+                    name="valorMeta"
+                    label="Valor de la Meta"
+                    type="number"
+                    fullWidth
+                  />
+                  <Field
+                    component={TextField}
+                    name="fechaLimite"
+                    label="Fecha Límite"
+                    type="date"
+                    fullWidth
+                  />
+                  <Field
+                    component={TextField}
+                    name="descripcionMeta"
+                    label="Descripción de la Meta"
+                    type="text"
+                    fullWidth
+                  />
+                  <Field
+                    component={Select}
+                    name="estadoMeta"
+                    label="Estado de la Meta"
+                    sx={{ width: "100%" }}
+                  >
+                    {
+                      estadoMeta.map((estado) => (
+                        <MenuItem key={estado} value={estado}>{estado}</MenuItem>
+                      ))
+                    }
+                  </Field>
+                  <Field
+                    component={TextField}
+                    name="progreso"
+                    label="Progreso"
+                    type="number"
+                    fullWidth
+                  />
+                  <Button variant="contained"
+                    color="primary"
+                    disabled={isSubmitting}
+                    onClick={submitForm}>Agregar
+                  </Button>
+                </Stack>
+              </Form>
+            )}
+          </Formik>
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpenDialog(false)}>Cancelar</Button>
-          <Button onClick={handleAddEntry} variant="contained" color="primary">
-            Agregar
-          </Button>
         </DialogActions>
       </Dialog>
     </div>
