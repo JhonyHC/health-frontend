@@ -5,22 +5,29 @@ import {
   Button,
   Card,
   CardContent,
-  TextField,
   List,
   Typography,
   Dialog,
   DialogTitle,
   DialogContent,
   DialogActions,
+  FormGroup,
+  FormControlLabel,
+  Stack,
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
+import { Formik, Form, Field } from 'formik';
+import { Checkbox, TextField } from 'formik-mui';
+import comunidadSchema from '../validations/comunidadSchema';
 
-const initialEntry = {
+const today = new Date().toISOString().split('T')[0];
+
+const initialValues = {
   nombreGrupo: '',
   descripcion: '',
-  fechaCreacion: '',
-  numeroMiembros: '',
-  isActive: '',
+  fechaCreacion: today,
+  // numeroMiembros: '',
+  isActive: false,
   imagen: '',
 };
 
@@ -46,26 +53,16 @@ const initialData = [
 const GroupComponent = () => {
   const [entries, setEntries] = useState([]);
   const [openDialog, setOpenDialog] = useState(false);
-  const [newEntry, setNewEntry] = useState(initialEntry);
 
   useEffect(() => {
     // Mostrar datos iniciales al cargar el componente
     setEntries(initialData);
   }, []);
 
-  const handleInputChange = (field, value) => {
-    setNewEntry({ ...newEntry, [field]: value });
-  };
-
-  const handleAddEntry = () => {
-    setEntries([...entries, newEntry]);
-    setNewEntry(initialEntry);
-    setOpenDialog(false);
-  };
 
   return (
     <div>
-   
+
 
       <Button
         variant="contained"
@@ -98,22 +95,75 @@ const GroupComponent = () => {
         ))}
       </List>
 
-      <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
+      <Dialog open={openDialog} fullWidth maxWidth="sm" onClose={() => setOpenDialog(false)}>
         <DialogTitle>Agregar Grupo</DialogTitle>
         <DialogContent>
-          <TextField
-            label="Nombre del Grupo"
-            fullWidth
-            value={newEntry.nombreGrupo}
-            onChange={(e) => handleInputChange('nombreGrupo', e.target.value)}
-          />
-          <TextField
-            label="Descripción"
-            fullWidth
-            value={newEntry.descripcion}
-            onChange={(e) => handleInputChange('descripcion', e.target.value)}
-          />
-          <TextField
+          <Formik
+            initialValues={initialValues}
+            validate={(values) => {
+              const errors = {};
+              const validation = comunidadSchema.validate(values);
+              if (validation.error) {
+                console.log(validation);
+                validation.error.details.forEach((err) => {
+                  errors[err.context.label] = err.message;
+                });
+              }
+
+              return errors;
+            }}
+            onSubmit={(values, { setSubmitting }) => {
+              setTimeout(() => {
+                setSubmitting(false);
+                alert(JSON.stringify(values, null, 2));
+                setEntries([...entries, values]);
+                setOpenDialog(false);
+              }, 500);
+            }}
+          >
+            {({ submitForm, isSubmitting }) => (
+              <Form>
+                <Stack spacing={2} mt={1}>
+                  <Field
+                    component={TextField}
+                    name="nombreGrupo"
+                    label="Nombre del Grupo"
+                    type="text"
+                    fullWidth
+                  />
+                  <Field
+                    component={TextField}
+                    name="descripcion"
+                    label="Descripción"
+                    type="text"
+                    fullWidth
+                  />
+                  <FormGroup>
+                    <FormControlLabel control={
+                      <Field
+                        component={Checkbox}
+                        name="isActive"
+                        type="checkbox"
+                      />
+                    } label="Activo (Sí/No)" />
+                  </FormGroup>
+                  <Field
+                    component={TextField}
+                    name="imagen"
+                    label="Imagen (URL)"
+                    type="text"
+                    fullWidth
+                  />
+                  <Button variant="contained"
+                    color="primary"
+                    disabled={isSubmitting}
+                    onClick={submitForm}>Agregar
+                  </Button>
+                </Stack>
+              </Form>
+            )}
+          </Formik>
+          {/* <TextField
             label="Fecha de Creación"
             fullWidth
             value={newEntry.fechaCreacion}
@@ -124,25 +174,10 @@ const GroupComponent = () => {
             fullWidth
             value={newEntry.numeroMiembros}
             onChange={(e) => handleInputChange('numeroMiembros', e.target.value)}
-          />
-          <TextField
-            label="Activo (Sí/No)"
-            fullWidth
-            value={newEntry.isActive}
-            onChange={(e) => handleInputChange('isActive', e.target.value)}
-          />
-          <TextField
-            label="Imagen (URL)"
-            fullWidth
-            value={newEntry.imagen}
-            onChange={(e) => handleInputChange('imagen', e.target.value)}
-          />
+          /> */}
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpenDialog(false)}>Cancelar</Button>
-          <Button onClick={handleAddEntry} variant="contained" color="primary">
-            Agregar
-          </Button>
         </DialogActions>
       </Dialog>
     </div>

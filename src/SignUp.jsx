@@ -15,6 +15,7 @@ import { useState } from 'react';
 import { Alert, AlertTitle } from '@mui/material';
 import toast from 'react-hot-toast';
 import UserProfile from './helpers/UserProfile';
+import { API_URL } from './helpers/constants';
 
 // TODO remove, this demo shouldn't need to reset the theme.
 
@@ -25,7 +26,7 @@ export default function SignUp() {
   const [error, setError] = useState(null);
 
   const getToken = async (email, password) => {
-    const res = await fetch('http://localhost:8080/auth', {
+    const res = await fetch(`${API_URL}/auth`, {
       method: 'POST',
       mode: 'cors',
       headers: {
@@ -48,7 +49,7 @@ export default function SignUp() {
 
     try {
       setError(null);
-      const res = await fetch('http://localhost:8080/usuarios/usuario', {
+      const res = await fetch(`${API_URL}/usuarios/usuario`, {
         method: 'POST',
         mode: 'cors',
         headers: {
@@ -65,8 +66,8 @@ export default function SignUp() {
       }
       if (res.status === 201) {
         toast.success('Cuenta creada 😃');
-        const { username, email, password } = await res.json();
-        const token = await getToken(email, password);
+        const { username, email } = await res.json();
+        const token = await getToken(email, userData.password);
         UserProfile.createSession(username, email, token);
         navigate('/');
       }

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { API_URL } from '../helpers/constants'
 import {
   AppBar,
   Toolbar,
@@ -19,6 +20,8 @@ import AddIcon from '@mui/icons-material/Add';
 import { Formik, Form, Field } from 'formik';
 import { Select, TextField } from 'formik-mui';
 import dietaSchema from '../validations/dietaSchema';
+import UserProfile from '../helpers/UserProfile';
+import toast from 'react-hot-toast';
 
 const initialValues = {
   nombre: '',
@@ -134,12 +137,31 @@ const DietList = () => {
               return errors;
             }}
             onSubmit={(values, { setSubmitting }) => {
-              setTimeout(() => {
-                setSubmitting(false);
-                alert(JSON.stringify(values, null, 2));
-                setEntries([...entries, values]);
-                setOpenDialog(false);
-              }, 500);
+              console.log(values, UserProfile.getToken());
+                fetch(`${API_URL}/dieta`, {
+                  method: 'POST',
+                  mode: 'cors',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + UserProfile.getToken(),
+                  },
+                  body: JSON.stringify(values),
+                }).then(response => {
+                  console.log(response);
+                  return response.json()
+                })
+                .then(data => {
+                  console.log(data);
+                  setEntries([...entries, values]);
+                  setOpenDialog(false);
+                  setSubmitting(false);
+                  toast.success('Dieta creada 🍉');
+                }).catch((error) => { 
+                  console.log(error);
+                  setSubmitting(false);
+                });
+
+                
             }}
           >
             {({ submitForm, isSubmitting }) => (

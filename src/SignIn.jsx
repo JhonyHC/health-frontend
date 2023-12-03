@@ -17,6 +17,7 @@ import UserProfile from './helpers/UserProfile';
 import { useState } from 'react';
 import { Alert, AlertTitle } from '@mui/material';
 import toast from 'react-hot-toast';
+import { API_URL } from './helpers/constants';
 
 function Copyright(props) {
   return (
@@ -54,7 +55,7 @@ export default function SignIn() {
 
     try {
       setError(null);
-      const res = await fetch('http://localhost:8080/auth', {
+      const res = await fetch(`${API_URL}/auth`, {
         method: 'POST',
         mode: 'cors',
         headers: {
@@ -70,9 +71,9 @@ export default function SignIn() {
         return;
       }
       if (res.status === 200) {
-        toast.success('¡Bienvenido!');
         const { token } = await res.json();
-        UserProfile.createSession('', userData.email, token);
+        await UserProfile.createSession('', userData.email, token);
+        toast.success('¡Bienvenido!');
         navigate('/');
       }
     } catch (err) {

@@ -1,21 +1,35 @@
+import { API_URL } from "./constants";
+
 const UserProfile = (function () {
   let username = '';
   let userToken = '';
 
-  const isLoggedIn = () => (localStorage.getItem('userData') ? true : false);
+  const isLoggedIn = () => {
+    return localStorage.getItem('userData') ? true : false;
+    // if(isLogged){
+    //   const userData = JSON.parse(localStorage.getItem('userData'));
+    //   username = userData.username;
+    //   userToken = userData.token;
+    // }
+    // return isLogged;
+  };
 
   const logout = () => {
     localStorage.removeItem('userData');
   };
 
-  const createSession = function (user, email, token) {
+  const createSession = async function (user, email, token) {
     if (isLoggedIn()) return;
-    localStorage.setItem(
-      'userData',
-      JSON.stringify({ username: user, email: email, token }),
-    );
     username = user;
     userToken = token;
+    if(!user){
+      const userInfo = await getUserInfo(token);
+      username = userInfo.username;
+    }
+    localStorage.setItem(
+      'userData',
+      JSON.stringify({ username: username, email: email, token }),
+    );
   };
 
   const getToken = function () {
@@ -25,6 +39,24 @@ const UserProfile = (function () {
   const getUsername = function () {
     return username;
   };
+
+  const getUserInfo = async (token) => {
+    try {
+      const res = await fetch(`${API_URL}/usuarios/me`, {
+        method: 'GET',
+        mode: 'cors',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const user = await res.json();
+      return user;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  
 
   return {
     getUsername,
