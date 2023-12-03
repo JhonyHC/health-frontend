@@ -33,11 +33,15 @@ const UserProfile = (function () {
   };
 
   const getToken = function () {
-    return userToken;
+    return userToken = userToken === '' 
+      ? JSON.parse(localStorage.getItem('userData')).token
+      : userToken;
   };
 
   const getUsername = function () {
-    return username;
+    return username = username === '' 
+      ? JSON.parse(localStorage.getItem('userData')).username
+      : username;
   };
 
   const getUserInfo = async (token) => {

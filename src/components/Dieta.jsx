@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { API_URL } from '../helpers/constants'
+import { API_URL } from '../helpers/constants';
 import {
   AppBar,
   Toolbar,
@@ -15,6 +15,7 @@ import {
   DialogActions,
   MenuItem,
   Stack,
+  Skeleton,
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { Formik, Form, Field } from 'formik';
@@ -22,6 +23,7 @@ import { Select, TextField } from 'formik-mui';
 import dietaSchema from '../validations/dietaSchema';
 import UserProfile from '../helpers/UserProfile';
 import toast from 'react-hot-toast';
+import CardSinEntradas from './CardSinEntradas';
 
 const initialValues = {
   nombre: '',
@@ -75,12 +77,27 @@ const tiposDieta = [
 ];
 
 const DietList = () => {
-  const [entries, setEntries] = useState([]);
+  const [entries, setEntries] = useState(null);
   const [openDialog, setOpenDialog] = useState(false);
 
   useEffect(() => {
     // Mostrar datos iniciales al cargar el componente
-    setEntries(initialData);
+    fetch(`${API_URL}/dieta`, {
+      method: 'GET',
+      mode: 'cors',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + UserProfile.getToken(),
+      },
+    }).then(response => response.json())
+      .then(data => {
+        setEntries(data);
+      }).catch((error) => {
+        console.log(error);
+        setEntries([]);
+        toast.error('Error del servidor al cargar los datos 😢');
+      });
+
   }, []);
 
   return (
@@ -96,27 +113,36 @@ const DietList = () => {
       </Button>
 
       <List>
-        {entries.map((entry, index) => (
-          <Card key={index} style={{ margin: '10px 0' }}>
-            <CardContent>
-              <Typography variant="h5" component="div">
-                {entry.nombre}
-              </Typography>
-              <Typography color="text.secondary">
-                Descripción: {entry.descripcion}
-              </Typography>
-              <Typography color="text.secondary">
-                Tipo de Dieta: {entry.tipoDieta}
-              </Typography>
-              <Typography color="text.secondary">Calorías: {entry.calorias}</Typography>
-              <Typography color="text.secondary">Proteínas: {entry.proteinas}</Typography>
-              <Typography color="text.secondary">Carbohidratos: {entry.carbohidratos}</Typography>
-              <Typography color="text.secondary">Grasas: {entry.grasas}</Typography>
-              <Typography color="text.secondary">Fibra: {entry.fibra}</Typography>
-              {/* Puedes agregar más campos aquí según tus necesidades */}
-            </CardContent>
-          </Card>
-        ))}
+        {
+          entries ?
+            (
+              entries.length === 0 ?
+                <CardSinEntradas />
+              : entries.map((entry, index) => (
+                <Card key={index} style={{ margin: '10px 0' }}>
+                  <CardContent>
+                    <Typography variant="h5" component="div">
+                      {entry.nombre}
+                    </Typography>
+                    <Typography color="text.secondary">
+                      Descripción: {entry.descripcion}
+                    </Typography>
+                    <Typography color="text.secondary">
+                      Tipo de Dieta: {entry.tipoDieta}
+                    </Typography>
+                    <Typography color="text.secondary">Calorías: {entry.calorias}</Typography>
+                    <Typography color="text.secondary">Proteínas: {entry.proteinas}</Typography>
+                    <Typography color="text.secondary">Carbohidratos: {entry.carbohidratos}</Typography>
+                    <Typography color="text.secondary">Grasas: {entry.grasas}</Typography>
+                    <Typography color="text.secondary">Fibra: {entry.fibra}</Typography>
+                    {/* Puedes agregar más campos aquí según tus necesidades */}
+                  </CardContent>
+                </Card>
+              ))
+            )
+            :
+            <Skeleton variant='rectangular' width={'100%'} height={200} />
+        }
       </List>
 
       <Dialog open={openDialog} fullWidth maxWidth="sm" onClose={() => setOpenDialog(false)}>
@@ -137,31 +163,28 @@ const DietList = () => {
               return errors;
             }}
             onSubmit={(values, { setSubmitting }) => {
-              console.log(values, UserProfile.getToken());
-                fetch(`${API_URL}/dieta`, {
-                  method: 'POST',
-                  mode: 'cors',
-                  headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + UserProfile.getToken(),
-                  },
-                  body: JSON.stringify(values),
-                }).then(response => {
-                  console.log(response);
-                  return response.json()
-                })
+              fetch(`${API_URL}/dieta`, {
+                method: 'POST',
+                mode: 'cors',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': 'Bearer ' + UserProfile.getToken(),
+                },
+                body: JSON.stringify(values),
+              }).then(response => {
+                return response.json();
+              })
                 .then(data => {
-                  console.log(data);
                   setEntries([...entries, values]);
                   setOpenDialog(false);
                   setSubmitting(false);
                   toast.success('Dieta creada 🍉');
-                }).catch((error) => { 
+                }).catch((error) => {
                   console.log(error);
                   setSubmitting(false);
                 });
 
-                
+
             }}
           >
             {({ submitForm, isSubmitting }) => (
