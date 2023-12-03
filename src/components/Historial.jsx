@@ -5,17 +5,20 @@ import {
   Button,
   Card,
   CardContent,
-  TextField,
   List,
   Typography,
   Dialog,
   DialogTitle,
   DialogContent,
   DialogActions,
+  Stack,
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
+import { Formik, Form, Field } from 'formik';
+import { TextField } from 'formik-mui';
+import historialSchema from '../validations/historialSchema';
 
-const initialEntry = {
+const initialValues = {
   alergias: '',
   enfermedadesCronicas: '',
   cirugiasAnteriores: '',
@@ -40,26 +43,15 @@ const initialData = [
 const HistoryComponent = () => {
   const [entries, setEntries] = useState([]);
   const [openDialog, setOpenDialog] = useState(false);
-  const [newEntry, setNewEntry] = useState(initialEntry);
 
   useEffect(() => {
     // Mostrar datos iniciales al cargar el componente
     setEntries(initialData);
   }, []);
 
-  const handleInputChange = (field, value) => {
-    setNewEntry({ ...newEntry, [field]: value });
-  };
-
-  const handleAddEntry = () => {
-    setEntries([...entries, newEntry]);
-    setNewEntry(initialEntry);
-    setOpenDialog(false);
-  };
-
   return (
     <div>
-     
+
 
       <Button
         variant="contained"
@@ -96,36 +88,72 @@ const HistoryComponent = () => {
       <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
         <DialogTitle>Agregar Entrada al Historial Médico</DialogTitle>
         <DialogContent>
-          <TextField
-            label="Alergias"
-            fullWidth
-            value={newEntry.alergias}
-            onChange={(e) => handleInputChange('alergias', e.target.value)}
-          />
-          <TextField
-            label="Enfermedades Crónicas"
-            fullWidth
-            value={newEntry.enfermedadesCronicas}
-            onChange={(e) => handleInputChange('enfermedadesCronicas', e.target.value)}
-          />
-          <TextField
-            label="Cirugías Anteriores"
-            fullWidth
-            value={newEntry.cirugiasAnteriores}
-            onChange={(e) => handleInputChange('cirugiasAnteriores', e.target.value)}
-          />
-          <TextField
-            label="Medicamentos Tomados"
-            fullWidth
-            value={newEntry.medicamentosTomados}
-            onChange={(e) => handleInputChange('medicamentosTomados', e.target.value)}
-          />
+          <Formik
+            initialValues={initialValues}
+            validate={(values) => {
+              const errors = {};
+              const validation = historialSchema.validate(values);
+              if (validation.error) {
+                console.log(validation);
+                validation.error.details.forEach((err) => {
+                  errors[err.context.label] = err.message;
+                });
+              }
+
+              return errors;
+            }}
+            onSubmit={(values, { setSubmitting }) => {
+              setTimeout(() => {
+                setSubmitting(false);
+                alert(JSON.stringify(values, null, 2));
+                setEntries([...entries, values]);
+                setOpenDialog(false);
+              }, 500);
+            }}
+          >
+            {({ submitForm, isSubmitting }) => (
+              <Form>
+                <Stack spacing={2} mt={1}>
+                  <Field
+                    component={TextField}
+                    name="alergias"
+                    label="Alergias"
+                    type="text"
+                    fullWidth
+                  />
+                  <Field
+                    component={TextField}
+                    name="enfermedadesCronicas"
+                    label="Enfermedades Crónicas"
+                    type="text"
+                    fullWidth
+                  />
+                  <Field
+                    component={TextField}
+                    name="cirugiasAnteriores"
+                    label="Cirugías Anteriores"
+                    type="text"
+                    fullWidth
+                  />
+                  <Field
+                    component={TextField}
+                    name="medicamentosTomados"
+                    label="Medicamentos Tomados"
+                    type="text"
+                    fullWidth
+                  />
+                  <Button variant="contained"
+                    color="primary"
+                    disabled={isSubmitting}
+                    onClick={submitForm}>Agregar
+                  </Button>
+                </Stack>
+              </Form>
+            )}
+          </Formik>
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpenDialog(false)}>Cancelar</Button>
-          <Button onClick={handleAddEntry} variant="contained" color="primary">
-            Agregar
-          </Button>
         </DialogActions>
       </Dialog>
     </div>
