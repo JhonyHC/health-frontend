@@ -63,10 +63,8 @@ export default function SignIn() {
         },
         body: JSON.stringify(userData),
       });
-      console.log(res);
       if (res.status >= 400) {
         const resJson = await res.json();
-        console.log(resJson);
         setError(createErrorContent(resJson));
         return;
       }

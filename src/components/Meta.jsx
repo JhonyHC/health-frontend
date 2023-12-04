@@ -13,11 +13,15 @@ import {
   DialogActions,
   MenuItem,
   Stack,
+  Skeleton,
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { Formik, Form, Field } from 'formik';
 import { Select, TextField } from 'formik-mui';
 import metaSchema from '../validations/metaSchema';
+import { getData, postData } from '../helpers/ApiCalls';
+import toast from 'react-hot-toast';
+import CardSinEntradas from './CardSinEntradas';
 
 const today = new Date().toISOString().split('T')[0];
 
@@ -61,7 +65,16 @@ const GoalComponent = () => {
 
   useEffect(() => {
     // Mostrar datos iniciales al cargar el componente
-    setEntries(initialData);
+    getData('/meta').then((data) => {
+      if (!Array.isArray(data)) {
+        throw new Error('No se pudo cargar los datos');
+      }
+      setEntries(data);
+    }).catch((error) => {
+      console.log(error);
+      setEntries([]);
+      toast.error('Error del servidor al cargar los datos 😢');
+    });
   }, []);
 
   return (
@@ -76,45 +89,55 @@ const GoalComponent = () => {
       </Button>
 
       <List>
-        {entries.map((entry, index) => (
-          <Card key={index} style={{ margin: '10px 0' }}>
-            <CardContent>
-              <Typography variant="h5" component="div">
-                Meta de Salud
-              </Typography>
-              <Typography color="text.secondary">
-                Tipo de Meta: {entry.tipoMeta}
-              </Typography>
-              <Typography color="text.secondary">
-                Valor de la Meta: {entry.valorMeta}
-              </Typography>
-              <Typography color="text.secondary">
-                Fecha Límite: {entry.fechaLimite}
-              </Typography>
-              <Typography color="text.secondary">
-                Descripción de la Meta: {entry.descripcionMeta}
-              </Typography>
-              <Typography color="text.secondary">
-                Estado de la Meta: {entry.estadoMeta}
-              </Typography>
-              <Typography color="text.secondary">
-                Progreso: {entry.progreso}
-              </Typography>
-            </CardContent>
-          </Card>
-        ))}
+        {
+          entries ?
+            (
+              entries.length === 0
+                ?
+                <CardSinEntradas />
+                :
+                entries.map((entry, index) => (
+                  <Card key={index} style={{ margin: '10px 0' }}>
+                    <CardContent>
+                      <Typography variant="h5" component="div">
+                        Meta de Salud
+                      </Typography>
+                      <Typography color="text.secondary">
+                        Tipo de Meta: {entry.tipoMeta}
+                      </Typography>
+                      <Typography color="text.secondary">
+                        Valor de la Meta: {entry.valorMeta}
+                      </Typography>
+                      <Typography color="text.secondary">
+                        Fecha Límite: {entry.fechaLimite}
+                      </Typography>
+                      <Typography color="text.secondary">
+                        Descripción de la Meta: {entry.descripcionMeta}
+                      </Typography>
+                      <Typography color="text.secondary">
+                        Estado de la Meta: {entry.estadoMeta}
+                      </Typography>
+                      <Typography color="text.secondary">
+                        Progreso: {entry.progreso}
+                      </Typography>
+                    </CardContent>
+                  </Card>
+                ))
+            )
+            :
+            <Skeleton variant='rectangular' width={'100%'} height={200} />
+        }
       </List>
 
       <Dialog open={openDialog} fullWidth maxWidth="sm" onClose={() => setOpenDialog(false)}>
         <DialogTitle>Agregar Meta de Salud</DialogTitle>
         <DialogContent>
-        <Formik
+          <Formik
             initialValues={initialValues}
             validate={(values) => {
               const errors = {};
               const validation = metaSchema.validate(values);
               if (validation.error) {
-                console.log(validation);
                 validation.error.details.forEach((err) => {
                   errors[err.context.label] = err.message;
                 });
@@ -123,12 +146,17 @@ const GoalComponent = () => {
               return errors;
             }}
             onSubmit={(values, { setSubmitting }) => {
-              setTimeout(() => {
-                setSubmitting(false);
-                alert(JSON.stringify(values, null, 2));
-                setEntries([...entries, values]);
-                setOpenDialog(false);
-              }, 500);
+              postData('/meta', values)
+                .then(data => {
+                  setEntries([...entries, data]);
+                  setOpenDialog(false);
+                  setSubmitting(false);
+                  toast.success('Meta creada 🏁');
+                }).catch((error) => {
+                  console.log(error);
+                  setSubmitting(false);
+                });
+
             }}
           >
             {({ submitForm, isSubmitting }) => (

@@ -57,10 +57,8 @@ export default function SignUp() {
         },
         body: JSON.stringify(userData),
       });
-      console.log(res);
       if (res.status >= 400) {
         const resJson = await res.json();
-        console.log(resJson);
         setError(createErrorContent(resJson));
         return;
       }
@@ -81,7 +79,6 @@ export default function SignUp() {
       <Alert severity="error">
         <AlertTitle>Error - {err.message}</AlertTitle>
         {err.details?.map((detail, index) => {
-          console.log(detail);
           return <Typography key={index}>- {detail.message} </Typography>;
         })}
       </Alert>

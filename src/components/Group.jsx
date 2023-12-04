@@ -66,7 +66,6 @@ const GroupComponent = () => {
         throw new Error('No se pudo cargar los datos');
       }
       setEntries(data);
-      console.log(data);
     }).catch((error) => {
       console.log(error);
       setEntries([]);
@@ -130,7 +129,6 @@ const GroupComponent = () => {
               const errors = {};
               const validation = comunidadSchema.validate(values);
               if (validation.error) {
-                console.log(validation);
                 validation.error.details.forEach((err) => {
                   errors[err.context.label] = err.message;
                 });

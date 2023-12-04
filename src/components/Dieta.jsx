@@ -162,7 +162,6 @@ const DietList = () => {
             onSubmit={(values, { setSubmitting }) => {
               postData('/dieta', values)
                 .then(data => {
-                  console.log(data);
                   setEntries([...entries, data]);
                   setOpenDialog(false);
                   setSubmitting(false);

@@ -12,11 +12,15 @@ import {
   DialogContent,
   DialogActions,
   Stack,
+  Skeleton,
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { Formik, Form, Field } from 'formik';
 import { TextField } from 'formik-mui';
 import historialSchema from '../validations/historialSchema';
+import { getData, postData } from '../helpers/ApiCalls';
+import toast from 'react-hot-toast';
+import CardSinEntradas from './CardSinEntradas';
 
 const initialValues = {
   alergias: '',
@@ -46,7 +50,16 @@ const HistoryComponent = () => {
 
   useEffect(() => {
     // Mostrar datos iniciales al cargar el componente
-    setEntries(initialData);
+    getData('/historial').then((data) => {
+      if (!Array.isArray(data)) {
+        throw new Error('No se pudo cargar los datos');
+      }
+      setEntries(data);
+    }).catch((error) => {
+      console.log(error);
+      setEntries([]);
+      toast.error('Error del servidor al cargar los datos 😢');
+    });
   }, []);
 
   return (
@@ -62,27 +75,38 @@ const HistoryComponent = () => {
       </Button>
 
       <List>
-        {entries.map((entry, index) => (
-          <Card key={index} style={{ margin: '10px 0' }}>
-            <CardContent>
-              <Typography variant="h5" component="div">
-                Historial Médico
-              </Typography>
-              <Typography color="text.secondary">
-                Alergias: {entry.alergias}
-              </Typography>
-              <Typography color="text.secondary">
-                Enfermedades Crónicas: {entry.enfermedadesCronicas}
-              </Typography>
-              <Typography color="text.secondary">
-                Cirugías Anteriores: {entry.cirugiasAnteriores}
-              </Typography>
-              <Typography color="text.secondary">
-                Medicamentos Tomados: {entry.medicamentosTomados}
-              </Typography>
-            </CardContent>
-          </Card>
-        ))}
+        {
+          entries ?
+            (
+              entries.length === 0
+                ?
+                <CardSinEntradas />
+                :
+                entries.map((entry, index) => (
+                  <Card key={index} style={{ margin: '10px 0' }}>
+                    <CardContent>
+                      <Typography variant="h5" component="div">
+                        Historial Médico
+                      </Typography>
+                      <Typography color="text.secondary">
+                        Alergias: {entry.alergias}
+                      </Typography>
+                      <Typography color="text.secondary">
+                        Enfermedades Crónicas: {entry.enfermedadesCronicas}
+                      </Typography>
+                      <Typography color="text.secondary">
+                        Cirugías Anteriores: {entry.cirugiasAnteriores}
+                      </Typography>
+                      <Typography color="text.secondary">
+                        Medicamentos Tomados: {entry.medicamentosTomados}
+                      </Typography>
+                    </CardContent>
+                  </Card>
+                ))
+            )
+            :
+            <Skeleton variant='rectangular' width={'100%'} height={200} />
+        }
       </List>
 
       <Dialog open={openDialog} fullWidth maxWidth="sm" onClose={() => setOpenDialog(false)}>
@@ -94,7 +118,6 @@ const HistoryComponent = () => {
               const errors = {};
               const validation = historialSchema.validate(values);
               if (validation.error) {
-                console.log(validation);
                 validation.error.details.forEach((err) => {
                   errors[err.context.label] = err.message;
                 });
@@ -103,12 +126,16 @@ const HistoryComponent = () => {
               return errors;
             }}
             onSubmit={(values, { setSubmitting }) => {
-              setTimeout(() => {
-                setSubmitting(false);
-                alert(JSON.stringify(values, null, 2));
-                setEntries([...entries, values]);
-                setOpenDialog(false);
-              }, 500);
+              postData('/historial', values)
+                .then(data => {
+                  setEntries([...entries, data]);
+                  setOpenDialog(false);
+                  setSubmitting(false);
+                  toast.success('Historial creado 🧡');
+                }).catch((error) => {
+                  console.log(error);
+                  setSubmitting(false);
+                });
             }}
           >
             {({ submitForm, isSubmitting }) => (

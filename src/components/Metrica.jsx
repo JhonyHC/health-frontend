@@ -13,11 +13,15 @@ import {
   List,
   ListItem,
   Stack,
+  Skeleton,
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { Formik, Form, Field } from 'formik';
 import { Select, TextField } from 'formik-mui';
 import metricaSchema from '../validations/metricaSchema';
+import { getData, postData } from '../helpers/ApiCalls';
+import toast from 'react-hot-toast';
+import CardSinEntradas from './CardSinEntradas';
 
 const initialValues = {
   circunferenciaCintura: '',
@@ -70,7 +74,16 @@ const MetricComponent = () => {
 
   useEffect(() => {
     // Mostrar datos iniciales al cargar el componente
-    setEntries(initialData);
+    getData('/metrica').then((data) => {
+      if (!Array.isArray(data)) {
+        throw new Error('No se pudo cargar los datos');
+      }
+      setEntries(data);
+    }).catch((error) => {
+      console.log(error);
+      setEntries([]);
+      toast.error('Error del servidor al cargar los datos 😢');
+    });
   }, []);
 
   const handleCardClick = (entry) => {
@@ -92,7 +105,7 @@ const MetricComponent = () => {
 
   return (
     <div>
-    
+
       <Button
         variant="contained"
         startIcon={<AddIcon />}
@@ -102,46 +115,57 @@ const MetricComponent = () => {
       </Button>
 
       <List>
-        {entries.map((entry, index) => (
-          <ListItem key={index} style={{ margin: '10px 0', cursor: 'pointer' }}>
-            <Card onClick={() => handleCardClick(entry)}>
-              <CardContent>
-                <Typography variant="h5" component="div">
-                  Métricas de Salud
-                </Typography>
-                <Typography color="text.secondary">
-                  Circunferencia de Cintura: {entry.circunferenciaCintura}
-                </Typography>
-                <Typography color="text.secondary">
-                  Presión Arterial: {entry.presionArterial}
-                </Typography>
-                <Typography color="text.secondary">
-                  Índice de Masa Corporal (IMC): {entry.imc}
-                </Typography>
-                <Typography color="text.secondary">Peso: {entry.peso}</Typography>
-                <Typography color="text.secondary">Altura: {entry.altura}</Typography>
-                <Typography color="text.secondary">
-                  Frecuencia Cardíaca: {entry.frecuenciaCardiaca}
-                </Typography>
-                <Typography color="text.secondary">
-                  Temperatura Corporal: {entry.temperaturaCorporal}
-                </Typography>
-                <Typography color="text.secondary">
-                  Glucosa en Sangre: {entry.glucosaEnSangre}
-                </Typography>
-                <Typography color="text.secondary">
-                  Colesterol HDL: {entry.colesterolHDL}
-                </Typography>
-                <Typography color="text.secondary">
-                  Colesterol LDL: {entry.colesterolLDL}
-                </Typography>
-                <Typography color="text.secondary">
-                  Frecuencia Respiratoria: {entry.frecuenciaRespiratoria}
-                </Typography>
-              </CardContent>
-            </Card>
-          </ListItem>
-        ))}
+        {
+          entries ?
+            (
+              entries.length === 0
+                ?
+                <CardSinEntradas />
+                :
+                entries.map((entry, index) => (
+                  <ListItem key={index} style={{ margin: '10px 0', cursor: 'pointer' }}>
+                    <Card onClick={() => handleCardClick(entry)}>
+                      <CardContent>
+                        <Typography variant="h5" component="div">
+                          Métricas de Salud
+                        </Typography>
+                        <Typography color="text.secondary">
+                          Circunferencia de Cintura: {entry.circunferenciaCintura}
+                        </Typography>
+                        <Typography color="text.secondary">
+                          Presión Arterial: {entry.presionArterial}
+                        </Typography>
+                        <Typography color="text.secondary">
+                          Índice de Masa Corporal (IMC): {entry.imc}
+                        </Typography>
+                        <Typography color="text.secondary">Peso: {entry.peso}</Typography>
+                        <Typography color="text.secondary">Altura: {entry.altura}</Typography>
+                        <Typography color="text.secondary">
+                          Frecuencia Cardíaca: {entry.frecuenciaCardiaca}
+                        </Typography>
+                        <Typography color="text.secondary">
+                          Temperatura Corporal: {entry.temperaturaCorporal}
+                        </Typography>
+                        <Typography color="text.secondary">
+                          Glucosa en Sangre: {entry.glucosaEnSangre}
+                        </Typography>
+                        <Typography color="text.secondary">
+                          Colesterol HDL: {entry.colesterolHDL}
+                        </Typography>
+                        <Typography color="text.secondary">
+                          Colesterol LDL: {entry.colesterolLDL}
+                        </Typography>
+                        <Typography color="text.secondary">
+                          Frecuencia Respiratoria: {entry.frecuenciaRespiratoria}
+                        </Typography>
+                      </CardContent>
+                    </Card>
+                  </ListItem>
+                ))
+            )
+            :
+            <Skeleton variant='rectangular' width={'100%'} height={200} />
+        }
       </List>
 
       {/* Diálogo para detalles */}
@@ -187,13 +211,12 @@ const MetricComponent = () => {
       <Dialog open={openAddDialog} fullWidth maxWidth="sm" onClose={handleCloseAddDialog}>
         <DialogTitle>Agregar Métrica de Salud</DialogTitle>
         <DialogContent>
-        <Formik
+          <Formik
             initialValues={initialValues}
             validate={(values) => {
               const errors = {};
               const validation = metricaSchema.validate(values);
               if (validation.error) {
-                console.log(validation);
                 validation.error.details.forEach((err) => {
                   errors[err.context.label] = err.message;
                 });
@@ -202,12 +225,16 @@ const MetricComponent = () => {
               return errors;
             }}
             onSubmit={(values, { setSubmitting }) => {
-              setTimeout(() => {
-                setSubmitting(false);
-                alert(JSON.stringify(values, null, 2));
-                setEntries([...entries, values]);
-                setOpenAddDialog(false);
-              }, 500);
+              postData('/metrica', values)
+                .then(data => {
+                  setEntries([...entries, data]);
+                  setOpenAddDialog(false);
+                  setSubmitting(false);
+                  toast.success('Metrica creada 📐');
+                }).catch((error) => {
+                  console.log(error);
+                  setSubmitting(false);
+                });
             }}
           >
             {({ submitForm, isSubmitting }) => (
