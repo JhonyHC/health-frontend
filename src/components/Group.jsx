@@ -14,11 +14,16 @@ import {
   FormGroup,
   FormControlLabel,
   Stack,
+  Skeleton,
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { Formik, Form, Field } from 'formik';
 import { Checkbox, TextField } from 'formik-mui';
 import comunidadSchema from '../validations/comunidadSchema';
+import { getData, postData } from '../helpers/ApiCalls';
+import UserProfile from '../helpers/UserProfile';
+import toast from 'react-hot-toast';
+import CardSinEntradas from './CardSinEntradas';
 
 const today = new Date().toISOString().split('T')[0];
 
@@ -26,7 +31,7 @@ const initialValues = {
   nombreGrupo: '',
   descripcion: '',
   fechaCreacion: today,
-  // numeroMiembros: '',
+  numeroMiembros: 0,
   isActive: false,
   imagen: '',
 };
@@ -51,12 +56,22 @@ const initialData = [
 ];
 
 const GroupComponent = () => {
-  const [entries, setEntries] = useState([]);
+  const [entries, setEntries] = useState(null);
   const [openDialog, setOpenDialog] = useState(false);
 
   useEffect(() => {
     // Mostrar datos iniciales al cargar el componente
-    setEntries(initialData);
+    getData(`/usuarios/${UserProfile.getUsername()}/comunidades`).then((data) => {
+      if (!Array.isArray(data)) {
+        throw new Error('No se pudo cargar los datos');
+      }
+      setEntries(data);
+      console.log(data);
+    }).catch((error) => {
+      console.log(error);
+      setEntries([]);
+      toast.error('Error del servidor al cargar los datos 😢');
+    });
   }, []);
 
 
@@ -73,26 +88,37 @@ const GroupComponent = () => {
       </Button>
 
       <List>
-        {entries.map((entry, index) => (
-          <Card key={index} style={{ margin: '10px 0' }}>
-            <CardContent>
-              <Typography variant="h5" component="div">
-                {entry.nombreGrupo}
-              </Typography>
-              <Typography color="text.secondary">
-                Descripción: {entry.descripcion}
-              </Typography>
-              <Typography color="text.secondary">
-                Fecha de Creación: {entry.fechaCreacion}
-              </Typography>
-              <Typography color="text.secondary">
-                Número de Miembros: {entry.numeroMiembros}
-              </Typography>
-              <Typography color="text.secondary">Activo: {entry.isActive ? 'Sí' : 'No'}</Typography>
-              <Typography color="text.secondary">Imagen: {entry.imagen}</Typography>
-            </CardContent>
-          </Card>
-        ))}
+        {
+          entries ?
+            (
+              entries.length === 0
+                ?
+                <CardSinEntradas />
+                :
+                entries.map((entry) => (
+                  <Card key={entry.id} style={{ margin: '10px 0' }}>
+                    <CardContent>
+                      <Typography variant="h5" component="div">
+                        {entry.nombreGrupo}
+                      </Typography>
+                      <Typography color="text.secondary">
+                        Descripción: {entry.descripcion}
+                      </Typography>
+                      <Typography color="text.secondary">
+                        Fecha de Creación: {entry.fechaCreacion}
+                      </Typography>
+                      <Typography color="text.secondary">
+                        Número de Miembros: {entry.numeroMiembros}
+                      </Typography>
+                      <Typography color="text.secondary">Activo: {entry.isActive ? 'Sí' : 'No'}</Typography>
+                      <Typography color="text.secondary">Imagen: {entry.imagen}</Typography>
+                    </CardContent>
+                  </Card>
+                ))
+            )
+            :
+            <Skeleton variant='rectangular' width={'100%'} height={200} />
+        }
       </List>
 
       <Dialog open={openDialog} fullWidth maxWidth="sm" onClose={() => setOpenDialog(false)}>
@@ -113,12 +139,16 @@ const GroupComponent = () => {
               return errors;
             }}
             onSubmit={(values, { setSubmitting }) => {
-              setTimeout(() => {
-                setSubmitting(false);
-                alert(JSON.stringify(values, null, 2));
-                setEntries([...entries, values]);
-                setOpenDialog(false);
-              }, 500);
+              postData('/comunidad', values)
+                .then(data => {
+                  setEntries([...entries, data]);
+                  setOpenDialog(false);
+                  setSubmitting(false);
+                  toast.success('Comunidad creada 💪');
+                }).catch((error) => {
+                  console.log(error);
+                  setSubmitting(false);
+                });
             }}
           >
             {({ submitForm, isSubmitting }) => (

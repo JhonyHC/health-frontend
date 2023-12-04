@@ -24,7 +24,7 @@ import dietaSchema from '../validations/dietaSchema';
 import UserProfile from '../helpers/UserProfile';
 import toast from 'react-hot-toast';
 import CardSinEntradas from './CardSinEntradas';
-import {getData, postData} from '../helpers/ApiCalls';
+import { getData, postData } from '../helpers/ApiCalls';
 
 const initialValues = {
   nombre: '',
@@ -84,7 +84,11 @@ const DietList = () => {
   useEffect(() => {
     // Mostrar datos iniciales al cargar el componente
     getData('/dieta').then((data) => {
+      if (!Array.isArray(data)) {
+        throw new Error('No se pudo cargar los datos');
+      }
       setEntries(data);
+      console.log(data);
     }).catch((error) => {
       console.log(error);
       setEntries([]);
@@ -109,29 +113,31 @@ const DietList = () => {
         {
           entries ?
             (
-              entries.length === 0 ?
+              entries.length === 0
+                ?
                 <CardSinEntradas />
-              : entries.map((entry, index) => (
-                <Card key={index} style={{ margin: '10px 0' }}>
-                  <CardContent>
-                    <Typography variant="h5" component="div">
-                      {entry.nombre}
-                    </Typography>
-                    <Typography color="text.secondary">
-                      Descripción: {entry.descripcion}
-                    </Typography>
-                    <Typography color="text.secondary">
-                      Tipo de Dieta: {entry.tipoDieta}
-                    </Typography>
-                    <Typography color="text.secondary">Calorías: {entry.calorias}</Typography>
-                    <Typography color="text.secondary">Proteínas: {entry.proteinas}</Typography>
-                    <Typography color="text.secondary">Carbohidratos: {entry.carbohidratos}</Typography>
-                    <Typography color="text.secondary">Grasas: {entry.grasas}</Typography>
-                    <Typography color="text.secondary">Fibra: {entry.fibra}</Typography>
-                    {/* Puedes agregar más campos aquí según tus necesidades */}
-                  </CardContent>
-                </Card>
-              ))
+                :
+                entries.map((entry) => (
+                  <Card key={entry.id} style={{ margin: '10px 0' }}>
+                    <CardContent>
+                      <Typography variant="h5" component="div">
+                        {entry.nombre}
+                      </Typography>
+                      <Typography color="text.secondary">
+                        Descripción: {entry.descripcion}
+                      </Typography>
+                      <Typography color="text.secondary">
+                        Tipo de Dieta: {entry.tipoDieta}
+                      </Typography>
+                      <Typography color="text.secondary">Calorías: {entry.calorias}</Typography>
+                      <Typography color="text.secondary">Proteínas: {entry.proteinas}</Typography>
+                      <Typography color="text.secondary">Carbohidratos: {entry.carbohidratos}</Typography>
+                      <Typography color="text.secondary">Grasas: {entry.grasas}</Typography>
+                      <Typography color="text.secondary">Fibra: {entry.fibra}</Typography>
+                      {/* Puedes agregar más campos aquí según tus necesidades */}
+                    </CardContent>
+                  </Card>
+                ))
             )
             :
             <Skeleton variant='rectangular' width={'100%'} height={200} />
@@ -157,7 +163,7 @@ const DietList = () => {
             onSubmit={(values, { setSubmitting }) => {
               postData('/dieta', values)
                 .then(data => {
-                  setEntries([...entries, values]);
+                  setEntries([...entries, data]);
                   setOpenDialog(false);
                   setSubmitting(false);
                   toast.success('Dieta creada 🍉');
