@@ -13,7 +13,7 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 import UserProfile from './helpers/UserProfile';
-import { Link as RouterLink} from 'react-router-dom';
+import { Link as RouterLink, useNavigate} from 'react-router-dom';
 
 const pages = [
   { name: 'Muro', url: '/' },
@@ -26,8 +26,8 @@ const pages = [
   { name: 'Comunidad', url: '/comunidad' },
 ];
 const settings = [
-  { name: 'Perfil', onClick: () => { } },
-  { name: 'Historial', onClick: () => { } },
+  { name: 'Perfil', onClick: (navigate) => { navigate('/perfil') } },
+  // { name: 'Historial', onClick: () => { } },
   {
     name: 'Cerrar sesión',
     onClick: () => {
@@ -39,6 +39,7 @@ const settings = [
 function ResponsiveAppBar({ setIsLogged }) {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
+  const navigate = useNavigate();
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -52,7 +53,7 @@ function ResponsiveAppBar({ setIsLogged }) {
   };
 
   const handleCloseUserMenu = (settingName, settingFunction) => {
-    typeof settingFunction === 'function' && settingFunction();
+    typeof settingFunction === 'function' && settingFunction(navigate);
     settingName === 'Cerrar sesión' && setIsLogged(false);
 
     setAnchorElUser(null);

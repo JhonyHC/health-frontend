@@ -20,6 +20,7 @@ import GoalComponent from './components/Meta.jsx';
 import MetricComponent from './components/Metrica.jsx';
 import Profile from './components/Cominidad.jsx';
 import MuroFacebook from './components/Muro.jsx';
+import Perfil from './components/Perfil.jsx';
 
 
 const router = createBrowserRouter([
@@ -56,6 +57,10 @@ const router = createBrowserRouter([
         path: '/comunidad',
         element: <Profile />,
       },
+      {
+        path: '/perfil',
+        element: <Perfil />,
+      }
     ],
     errorElement: <ErrorPage />,
   },

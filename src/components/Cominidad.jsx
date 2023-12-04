@@ -67,7 +67,7 @@ const Profile = () => {
   return (
     <div>
       
-      <Card>
+      {/* <Card>
       <CardHeader
         avatar={<Avatar src="URL_DE_LA_IMAGEN_DEL_PERFIL" />}
         title="Nombre del Usuario"
@@ -98,7 +98,7 @@ const Profile = () => {
 
 
     </Card>
-    <br />
+    <br /> */}
     <Card>
     <CardContent>
         <Typography variant="h6" gutterBottom>

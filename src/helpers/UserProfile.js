@@ -2,6 +2,7 @@ import { API_URL } from "./constants";
 
 const UserProfile = (function () {
   let username = '';
+  let userEmail = '';
   let userToken = '';
 
   const isLoggedIn = () => {
@@ -21,6 +22,7 @@ const UserProfile = (function () {
   const createSession = async function (user, email, token) {
     if (isLoggedIn()) return;
     username = user;
+    userEmail = email;
     userToken = token;
     if(!user){
       const userInfo = await getUserInfo(token);
@@ -36,6 +38,12 @@ const UserProfile = (function () {
     return userToken = userToken === '' 
       ? JSON.parse(localStorage.getItem('userData')).token
       : userToken;
+  };
+
+  const getEmail = function () {
+    return userEmail = userEmail === '' 
+      ? JSON.parse(localStorage.getItem('userData')).email
+      : userEmail;
   };
 
   const getUsername = function () {
@@ -68,6 +76,7 @@ const UserProfile = (function () {
     logout,
     createSession,
     getToken,
+    getEmail,
   };
 })();
 
