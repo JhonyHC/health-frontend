@@ -21,6 +21,7 @@ import MetricComponent from './components/Metrica.jsx';
 import Profile from './components/Cominidad.jsx';
 import MuroFacebook from './components/Muro.jsx';
 import Perfil from './components/Perfil.jsx';
+import Comunidades from './components/Comunidades.jsx';
 
 
 const router = createBrowserRouter([
@@ -54,8 +55,8 @@ const router = createBrowserRouter([
         element: <MetricComponent />,
       },
       {
-        path: '/comunidad',
-        element: <Profile />,
+        path: '/comunidades',
+        element: <Comunidades />,
       },
       {
         path: '/perfil',

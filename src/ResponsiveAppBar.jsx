@@ -23,7 +23,7 @@ const pages = [
   { name: 'Historial', url: '/historial' },
   { name: 'Meta', url: '/meta' },
   { name: 'Metrica', url: '/metrica' },
-  { name: 'Comunidad', url: '/comunidad' },
+  { name: 'Comunidades', url: '/comunidades' },
 ];
 const settings = [
   { name: 'Perfil', onClick: (navigate) => { navigate('/perfil') } },
