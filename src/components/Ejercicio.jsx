@@ -12,11 +12,15 @@ import {
   DialogContent,
   DialogActions,
   Stack,
+  Skeleton,
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { Formik, Form, Field } from 'formik';
 import { Select, TextField } from 'formik-mui';
 import ejercicioSchema from '../validations/ejercicioSchema';
+import { getData, postData } from '../helpers/ApiCalls';
+import toast from 'react-hot-toast';
+import CardSinEntradas from './CardSinEntradas';
 
 const initialValues = {
   nombre: '',
@@ -61,7 +65,17 @@ const ExerciseComponent = () => {
 
   useEffect(() => {
     // Mostrar datos iniciales al cargar el componente
-    setEntries(initialData);
+    getData('/ejercicio').then((data) => {
+      if (!Array.isArray(data)) {
+        throw new Error('No se pudo cargar los datos');
+      }
+      setEntries(data);
+      console.log(data);
+    }).catch((error) => {
+      console.log(error);
+      setEntries([]);
+      toast.error('Error del servidor al cargar los datos 😢');
+    });
   }, []);
 
   return (
@@ -76,37 +90,47 @@ const ExerciseComponent = () => {
       </Button>
 
       <List>
-        {entries.map((entry, index) => (
-          <Card key={index} style={{ margin: '10px 0' }}>
-            <CardContent>
-              <Typography variant="h5" component="div">
-                {entry.nombre}
-              </Typography>
-              <Typography color="text.secondary">
-                Descripción: {entry.descripcion}
-              </Typography>
-              <Typography color="text.secondary">
-                Tipo de Ejercicio: {entry.tipoDeEjercicio}
-              </Typography>
-              <Typography color="text.secondary">
-                Duración Estimada: {entry.duracionEstimada}
-              </Typography>
-              <Typography color="text.secondary">
-                Grupo Muscular Trabajado: {entry.grupoMuscularTrabajado}
-              </Typography>
-              <Typography color="text.secondary">
-                Nivel de Dificultad: {entry.nivelDeDificultad}
-              </Typography>
-              <Typography color="text.secondary">
-                Calorías Quemadas: {entry.caloriasQuemadas}
-              </Typography>
-              <Typography color="text.secondary">
-                Imagen del Ejercicio: {entry.imagenDelEjercicio}
-              </Typography>
-              <Typography color="text.secondary">Imagen: {entry.imagen}</Typography>
-            </CardContent>
-          </Card>
-        ))}
+        {entries ?
+          (
+            entries.length === 0
+              ?
+              <CardSinEntradas />
+              :
+              entries.map((entry, index) => (
+                <Card key={index} style={{ margin: '10px 0' }}>
+                  <CardContent>
+                    <Typography variant="h5" component="div">
+                      {entry.nombre}
+                    </Typography>
+                    <Typography color="text.secondary">
+                      Descripción: {entry.descripcion}
+                    </Typography>
+                    <Typography color="text.secondary">
+                      Tipo de Ejercicio: {entry.tipoDeEjercicio}
+                    </Typography>
+                    <Typography color="text.secondary">
+                      Duración Estimada: {entry.duracionEstimada}
+                    </Typography>
+                    <Typography color="text.secondary">
+                      Grupo Muscular Trabajado: {entry.grupoMuscularTrabajado}
+                    </Typography>
+                    <Typography color="text.secondary">
+                      Nivel de Dificultad: {entry.nivelDeDificultad}
+                    </Typography>
+                    <Typography color="text.secondary">
+                      Calorías Quemadas: {entry.caloriasQuemadas}
+                    </Typography>
+                    <Typography color="text.secondary">
+                      Imagen del Ejercicio: {entry.imagenDelEjercicio}
+                    </Typography>
+                    <Typography color="text.secondary">Imagen: {entry.imagen}</Typography>
+                  </CardContent>
+                </Card>
+              ))
+          )
+          :
+          <Skeleton variant='rectangular' width={'100%'} height={200} />
+        }
       </List>
 
       <Dialog open={openDialog} fullWidth maxWidth="sm" onClose={() => setOpenDialog(false)}>
@@ -127,12 +151,16 @@ const ExerciseComponent = () => {
               return errors;
             }}
             onSubmit={(values, { setSubmitting }) => {
-              setTimeout(() => {
-                setSubmitting(false);
-                alert(JSON.stringify(values, null, 2));
-                setEntries([...entries, values]);
-                setOpenDialog(false);
-              }, 500);
+              postData('/ejercicio', values)
+                .then(data => {
+                  setEntries([...entries, data]);
+                  setOpenDialog(false);
+                  setSubmitting(false);
+                  toast.success('Ejercicio creado 💪');
+                }).catch((error) => {
+                  console.log(error);
+                  setSubmitting(false);
+                });
             }}
           >
             {({ submitForm, isSubmitting }) => (
@@ -201,12 +229,12 @@ const ExerciseComponent = () => {
                     type="text"
                     fullWidth
                   />
-                <Button variant="contained"
-                  color="primary"
-                  disabled={isSubmitting}
-                  onClick={submitForm}>
-                  Agregar
-                </Button>
+                  <Button variant="contained"
+                    color="primary"
+                    disabled={isSubmitting}
+                    onClick={submitForm}>
+                    Agregar
+                  </Button>
                 </Stack>
               </Form>
             )}

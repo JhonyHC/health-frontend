@@ -88,7 +88,6 @@ const DietList = () => {
         throw new Error('No se pudo cargar los datos');
       }
       setEntries(data);
-      console.log(data);
     }).catch((error) => {
       console.log(error);
       setEntries([]);
@@ -163,6 +162,7 @@ const DietList = () => {
             onSubmit={(values, { setSubmitting }) => {
               postData('/dieta', values)
                 .then(data => {
+                  console.log(data);
                   setEntries([...entries, data]);
                   setOpenDialog(false);
                   setSubmitting(false);
@@ -250,7 +250,7 @@ const DietList = () => {
                     component={TextField}
                     name="url"
                     label="Imagen (URL)"
-                    type="url"
+                    type="text"
                     fullWidth
                   />
                   <Button variant="contained"
