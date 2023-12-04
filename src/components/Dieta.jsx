@@ -24,6 +24,7 @@ import dietaSchema from '../validations/dietaSchema';
 import UserProfile from '../helpers/UserProfile';
 import toast from 'react-hot-toast';
 import CardSinEntradas from './CardSinEntradas';
+import {getData, postData} from '../helpers/ApiCalls';
 
 const initialValues = {
   nombre: '',
@@ -82,21 +83,13 @@ const DietList = () => {
 
   useEffect(() => {
     // Mostrar datos iniciales al cargar el componente
-    fetch(`${API_URL}/dieta`, {
-      method: 'GET',
-      mode: 'cors',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + UserProfile.getToken(),
-      },
-    }).then(response => response.json())
-      .then(data => {
-        setEntries(data);
-      }).catch((error) => {
-        console.log(error);
-        setEntries([]);
-        toast.error('Error del servidor al cargar los datos 😢');
-      });
+    getData('/dieta').then((data) => {
+      setEntries(data);
+    }).catch((error) => {
+      console.log(error);
+      setEntries([]);
+      toast.error('Error del servidor al cargar los datos 😢');
+    });
 
   }, []);
 
@@ -154,7 +147,6 @@ const DietList = () => {
               const errors = {};
               const validation = dietaSchema.validate(values);
               if (validation.error) {
-                console.log(validation);
                 validation.error.details.forEach((err) => {
                   errors[err.context.label] = err.message;
                 });
@@ -163,17 +155,7 @@ const DietList = () => {
               return errors;
             }}
             onSubmit={(values, { setSubmitting }) => {
-              fetch(`${API_URL}/dieta`, {
-                method: 'POST',
-                mode: 'cors',
-                headers: {
-                  'Content-Type': 'application/json',
-                  'Authorization': 'Bearer ' + UserProfile.getToken(),
-                },
-                body: JSON.stringify(values),
-              }).then(response => {
-                return response.json();
-              })
+              postData('/dieta', values)
                 .then(data => {
                   setEntries([...entries, values]);
                   setOpenDialog(false);
