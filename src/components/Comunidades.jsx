@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { getData } from "../helpers/ApiCalls";
 import toast from "react-hot-toast";
-import { Button, Card, CardContent, Skeleton, Typography } from "@mui/material";
+import { Box, Button, Card, CardContent, Skeleton, Typography } from "@mui/material";
 import CardSinEntradas from "./CardSinEntradas";
 
 
@@ -32,13 +32,18 @@ function Comunidades() {
                     <CardSinEntradas />
                     :
                     entries.map((entry) => (
-                        <Card key={entry.id}>
+                        <Card key={entry.id} sx={{ my: 3 }}>
                             <CardContent>
                                 <Typography variant="h6" gutterBottom>
                                     {entry.nombreGrupo}
                                 </Typography>
                                 <Typography variant="p" sx={{ display: 'block' }} gutterBottom>
-                                    <Typography variant="b">Descripción: </Typography>
+                                    <Box>
+                                    <Typography variant="span" sx={{ fontWeight: 'bold' }}>Creador: </Typography>
+                                    <Typography variant="span">{entry.creador?.username}</Typography>
+
+                                    </Box>
+                                    <Typography variant="span" sx={{ fontWeight: 'bold' }}>Descripción: </Typography>
                                     <Typography variant="span">{entry.descripcion}</Typography>
                                 </Typography>
                                 <Button type="submit" variant="contained" color="primary" disabled>
