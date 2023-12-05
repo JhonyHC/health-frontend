@@ -1,5 +1,6 @@
 import { Box, Container, CssBaseline, Stack, Typography } from '@mui/material';
-import { Link } from 'react-router-dom';
+import { Link as RouterLink } from 'react-router-dom';
+import { Button } from '@mui/material';
 
 function Landing() {
   return (
@@ -17,13 +18,13 @@ function Landing() {
         <Stack alignItems="center" spacing={3}>
           <Box>
             <Typography variant="h2" textAlign="center">
-              Bienvenido a VitaVibe
+              Bienvenido a <Typography variant='h2' component="span" sx={{ color: '#1976d2', fontWeight: 'bold' }}>VitaVibe</Typography>
             </Typography>
             <Typography variant="subtitle1" textAlign="center">
               Una red social de salud y ejercicio.
             </Typography>
           </Box>
-          <Link to="signin">Iniciar sesión</Link>
+          <Button component={RouterLink} to="/signin" variant="contained">Iniciar sesión</Button>
         </Stack>
       </Container>
     </Box>

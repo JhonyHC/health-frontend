@@ -24,37 +24,43 @@ function Comunidades() {
     }, []);
 
     return (
+        <>
+            <Typography variant="h4" sx={{ textAlign: 'center' }} gutterBottom>
+                Comunidades
+            </Typography>
+            {
+                entries ?
+                    (
+                        entries.length === 0
+                            ?
+                            <CardSinEntradas />
+                            :
+                            entries.map((entry) => (
+                                <Card key={entry.id} sx={{ my: 3 }}>
+                                    <CardContent>
+                                        <Typography variant="h6" gutterBottom>
+                                            {entry.nombreGrupo}
+                                        </Typography>
+                                        <Typography variant="p" sx={{ display: 'block' }} gutterBottom>
+                                            <Box>
+                                                <Typography variant="span" sx={{ fontWeight: 'bold' }}>Creador: </Typography>
+                                                <Typography variant="span">{entry.creador?.username}</Typography>
 
-        entries ?
-            (
-                entries.length === 0
-                    ?
-                    <CardSinEntradas />
+                                            </Box>
+                                            <Typography variant="span" sx={{ fontWeight: 'bold' }}>Descripción: </Typography>
+                                            <Typography variant="span">{entry.descripcion}</Typography>
+                                        </Typography>
+                                        <Button type="submit" variant="contained" color="primary" disabled>
+                                            Entrar a comunidad (proximamente)
+                                        </Button>
+                                    </CardContent>
+                                </Card>
+                            ))
+                    )
                     :
-                    entries.map((entry) => (
-                        <Card key={entry.id} sx={{ my: 3 }}>
-                            <CardContent>
-                                <Typography variant="h6" gutterBottom>
-                                    {entry.nombreGrupo}
-                                </Typography>
-                                <Typography variant="p" sx={{ display: 'block' }} gutterBottom>
-                                    <Box>
-                                    <Typography variant="span" sx={{ fontWeight: 'bold' }}>Creador: </Typography>
-                                    <Typography variant="span">{entry.creador?.username}</Typography>
-
-                                    </Box>
-                                    <Typography variant="span" sx={{ fontWeight: 'bold' }}>Descripción: </Typography>
-                                    <Typography variant="span">{entry.descripcion}</Typography>
-                                </Typography>
-                                <Button type="submit" variant="contained" color="primary" disabled>
-                                    Entrar a comunidad (proximamente)
-                                </Button>
-                            </CardContent>
-                        </Card>
-                    ))
-            )
-            :
-            <Skeleton variant='rectangular' width={'100%'} height={200} />
+                    <Skeleton variant='rectangular' width={'100%'} height={200} />
+            }
+        </>
     );
 }
 

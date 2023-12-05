@@ -98,7 +98,9 @@ const DietList = () => {
 
   return (
     <div>
-
+      <Typography variant="h4" sx={{ textAlign: 'center' }} gutterBottom>
+        Dieta
+      </Typography>
 
       <Button
         variant="contained"

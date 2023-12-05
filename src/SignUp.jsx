@@ -2,7 +2,7 @@
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
-import TextField from '@mui/material/TextField';
+import { TextField } from 'formik-mui';
 import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
@@ -16,14 +16,14 @@ import { Alert, AlertTitle } from '@mui/material';
 import toast from 'react-hot-toast';
 import UserProfile from './helpers/UserProfile';
 import { API_URL } from './helpers/constants';
+import { crearUsuarioSchema } from './validations/usuarioSchema';
+import { Field, Form, Formik } from 'formik';
 
-// TODO remove, this demo shouldn't need to reset the theme.
 
 const defaultTheme = createTheme();
 
 export default function SignUp() {
   const navigate = useNavigate();
-  const [error, setError] = useState(null);
 
   const getToken = async (email, password) => {
     const res = await fetch(`${API_URL}/auth`, {
@@ -40,38 +40,7 @@ export default function SignUp() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    const userData = {
-      username: data.get('username'),
-      email: data.get('email'),
-      password: data.get('password'),
-    };
 
-    try {
-      setError(null);
-      const res = await fetch(`${API_URL}/usuarios/usuario`, {
-        method: 'POST',
-        mode: 'cors',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(userData),
-      });
-      if (res.status >= 400) {
-        const resJson = await res.json();
-        setError(createErrorContent(resJson));
-        return;
-      }
-      if (res.status === 201) {
-        toast.success('Cuenta creada 😃');
-        const { username, email } = await res.json();
-        const token = await getToken(email, userData.password);
-        UserProfile.createSession(username, email, token);
-        navigate('/');
-      }
-    } catch (err) {
-      console.log(err);
-    }
   };
 
   const createErrorContent = (err) => {
@@ -101,56 +70,107 @@ export default function SignUp() {
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
-            Sign up
+            Registrarse
           </Typography>
-          <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="username"
-              label="Username"
-              name="username"
-              autoFocus
-            />
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="email"
-              label="Email Address"
-              name="email"
-              autoComplete="email"
-            />
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              name="password"
-              label="Password"
-              type="password"
-              id="password"
-              autoComplete="current-password"
-            />
-            {error}
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-            >
-              Register
-            </Button>
-            <Grid container>
-              <Grid item>
-                <Link component={RouterLink} to="/signin" variant="body2">
-                  {'Already have an account? Sign in'}
-                </Link>
-              </Grid>
+          <Formik
+            initialValues={{ email: '', username: '', password: '' }}
+            validate={(values) => {
+              const errors = {};
+              const validation = crearUsuarioSchema.validate(values);
+              if (validation.error) {
+                validation.error.details.forEach((err) => {
+                  errors[err.context.label] = err.message;
+                });
+              }
+              return errors;
+            }}
+            onSubmit={async (values, { setSubmitting }) => {
+              try {
+                const res = await fetch(`${API_URL}/usuarios/usuario`, {
+                  method: 'POST',
+                  mode: 'cors',
+                  headers: {
+                    'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify(values),
+                });
+                if (res.status >= 400) {
+                  const resJson = await res.json();
+                  toast.error(resJson.message);
+                  setSubmitting(false);
+                  return;
+                }
+                if (res.status === 201) {
+                  toast.success('Cuenta creada 😃');
+                  const { username, email } = await res.json();
+                  const token = await getToken(email, values.password);
+                  UserProfile.createSession(username, email, token);
+                  navigate('/');
+                }
+              } catch (err) {
+                toast.error('Error al crear la cuenta 😢');
+                console.log(err);
+              }
+
+            }
+            }
+          >
+            {({ submitForm, isSubmitting }) => (
+              <Form>
+                <Field
+                  component={TextField}
+                  name="username"
+                  label="Nombre de usuario"
+                  type="text"
+                  autoComplete="username"
+                  fullWidth
+                  style={{
+                    marginTop: '15px'
+                  }}
+                />
+                <Field
+                  component={TextField}
+                  name="email"
+                  label="Correo electrónico"
+                  type="email"
+                  autoComplete="email"
+                  fullWidth
+                  style={{
+                    marginBottom: "15px", marginTop: '15px'
+                  }}
+                />
+                < Field
+                  component={TextField}
+                  name="password"
+                  label="Contraseña"
+                  type="password"
+                  fullWidth
+                  style={{
+                    marginBottom: "15px"
+                  }}
+                />
+                <Button
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  disabled={isSubmitting}
+                  onClick={submitForm}
+                  sx={{ mt: 3, mb: 2 }}
+                >
+                  Registrarse
+                </Button>
+              </Form>
+            )}
+          </Formik>
+          <Grid container>
+            <Grid item>
+              <Link component={RouterLink} to="/signin" variant="body2">
+                {'¿Ya tienes una cuenta? Inicia sesión'}
+              </Link>
             </Grid>
-          </Box>
+          </Grid>
         </Box>
       </Container>
     </ThemeProvider>
   );
-}
+};

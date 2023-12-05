@@ -80,6 +80,10 @@ const GoalComponent = () => {
   return (
     <div>
 
+      <Typography variant="h4" sx={{ textAlign: 'center' }} gutterBottom>
+        Meta
+      </Typography>
+
       <Button
         variant="contained"
         startIcon={<AddIcon />}

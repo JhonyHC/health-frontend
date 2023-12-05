@@ -65,6 +65,9 @@ const HistoryComponent = () => {
   return (
     <div>
 
+      <Typography variant="h4" sx={{ textAlign: 'center' }} gutterBottom>
+        Historial
+      </Typography>
 
       <Button
         variant="contained"

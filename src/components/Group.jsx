@@ -77,6 +77,9 @@ const GroupComponent = () => {
   return (
     <div>
 
+      <Typography variant="h4" sx={{ textAlign: 'center' }} gutterBottom>
+        Grupo
+      </Typography>
 
       <Button
         variant="contained"

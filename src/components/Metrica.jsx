@@ -106,6 +106,10 @@ const MetricComponent = () => {
   return (
     <div>
 
+      <Typography variant="h4" sx={{ textAlign: 'center' }} gutterBottom>
+        Metrica
+      </Typography>
+
       <Button
         variant="contained"
         startIcon={<AddIcon />}

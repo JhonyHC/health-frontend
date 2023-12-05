@@ -2,7 +2,7 @@
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
-import TextField from '@mui/material/TextField';
+import { TextField } from 'formik-mui';
 // import FormControlLabel from '@mui/material/FormControlLabel';
 // import Checkbox from '@mui/material/Checkbox';
 import Link from '@mui/material/Link';
@@ -14,10 +14,10 @@ import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import UserProfile from './helpers/UserProfile';
-import { useState } from 'react';
-import { Alert, AlertTitle } from '@mui/material';
 import toast from 'react-hot-toast';
 import { API_URL } from './helpers/constants';
+import { Field, Form, Formik } from 'formik';
+import authSchema from './validations/authSchema';
 
 function Copyright(props) {
   return (
@@ -28,8 +28,8 @@ function Copyright(props) {
       {...props}
     >
       {'Copyright © '}
-      <Link color="inherit" href="https://mui.com/">
-        Health App
+      <Link color="inherit" href="/">
+        VitaVibe
       </Link>{' '}
       {new Date().getFullYear()}
       {'.'}
@@ -37,56 +37,11 @@ function Copyright(props) {
   );
 }
 
-// TODO remove, this demo shouldn't need to reset the theme.
 
 const defaultTheme = createTheme();
 
 export default function SignIn() {
   const navigate = useNavigate();
-  const [error, setError] = useState(null);
-
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    const userData = {
-      email: data.get('email'),
-      password: data.get('password'),
-    };
-
-    try {
-      setError(null);
-      const res = await fetch(`${API_URL}/auth`, {
-        method: 'POST',
-        mode: 'cors',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(userData),
-      });
-      if (res.status >= 400) {
-        const resJson = await res.json();
-        setError(createErrorContent(resJson));
-        return;
-      }
-      if (res.status === 200) {
-        const { token } = await res.json();
-        await UserProfile.createSession('', userData.email, token);
-        toast.success('¡Bienvenido!');
-        navigate('/');
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  const createErrorContent = (err) => {
-    return (
-      <Alert severity="error">
-        <AlertTitle>Error</AlertTitle>
-        <Typography> {err.message} </Typography>
-      </Alert>
-    );
-  };
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -104,60 +59,96 @@ export default function SignIn() {
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
-            Sign in
+            Iniciar Sesión
           </Typography>
-          <Box
-            component="form"
-            onSubmit={handleSubmit}
-            noValidate
-            sx={{ mt: 1 }}
+          <Formik
+            initialValues={{ email: '', password: '' }}
+            validate={(values) => {
+              const errors = {};
+              const validation = authSchema.validate(values);
+              if (validation.error) {
+                validation.error.details.forEach((err) => {
+                  errors[err.context.label] = err.message;
+                });
+              }
+
+              return errors;
+            }}
+            onSubmit={(values, { setSubmitting }) => {
+
+              fetch(`${API_URL}/auth`, {
+                method: 'POST',
+                mode: 'cors',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(values),
+              }).then((res) => res.json())
+                .then(async (value) => {
+                  if (value.code) {
+                    toast.error(value.message);
+                    setSubmitting(false);
+                    return;
+                  }
+                  await UserProfile.createSession('', values.email, value.token);
+                  toast.success('¡Bienvenido!');
+                  navigate('/');
+                })
+                .catch((err) => {
+                  toast.error('Lo sentimos, hubo un error en el servidor 😢');
+                  console.log(err);
+                  setSubmitting(false);
+                });
+            }
+            }
           >
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="email"
-              label="Email Address"
-              name="email"
-              autoComplete="email"
-              autoFocus
-            />
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              name="password"
-              label="Password"
-              type="password"
-              id="password"
-              autoComplete="current-password"
-            />
-            {/* <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Remember me"
-            /> */}
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-            >
-              Sign In
-            </Button>
-            {error}
-            <Grid container>
-              <Grid item xs>
-                <Link component={RouterLink} to="/" variant="body2">
-                  Back to home
-                </Link>
-              </Grid>
-              <Grid item>
-                <Link component={RouterLink} to="/signup" variant="body2">
-                  {"Don't have an account? Sign Up"}
-                </Link>
-              </Grid>
+            {({ submitForm, isSubmitting }) => (
+              <Form>
+                <Field
+                  component={TextField}
+                  name="email"
+                  label="Correo electrónico"
+                  type="email"
+                  autoComplete="email"
+                  fullWidth
+                  style={{
+                    marginBottom: "15px", marginTop: '15px'
+                  }}
+                />
+                < Field
+                  component={TextField}
+                  name="password"
+                  label="Contraseña"
+                  type="password"
+                  autoComplete="current-password"
+                  fullWidth
+                />
+                <Button
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  disabled={isSubmitting}
+                  onClick={submitForm}
+                  sx={{ mt: 3, mb: 2 }}
+                >
+                  Iniciar sesión
+                </Button>
+              </Form>
+            )}
+          </Formik>
+          <Grid container>
+            <Grid item xs>
+              <Link component={RouterLink} to="/" variant="body2">
+                Volver al inicio
+              </Link>
             </Grid>
-          </Box>
+            <Grid item>
+              <Link component={RouterLink} to="/signup" variant="body2">
+                {"¿No tienes cuenta? Registrate"}
+              </Link>
+            </Grid>
+          </Grid>
+          {/* </Box> */}
         </Box>
         <Copyright sx={{ mt: 8, mb: 4 }} />
       </Container>

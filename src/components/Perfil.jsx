@@ -4,6 +4,10 @@ import UserProfile from "../helpers/UserProfile";
 
 function Perfil() {
     return (
+        <>
+        <Typography variant="h4" sx={{ textAlign: 'center' }} gutterBottom>
+          Tu Perfil
+        </Typography>
         <Card>
             <CardHeader
                 avatar={<Avatar src="URL_DE_LA_IMAGEN_DEL_PERFIL" />}
@@ -29,6 +33,7 @@ function Perfil() {
             </CardContent> */}
 
         </Card>
+        </>
     );
 }
 

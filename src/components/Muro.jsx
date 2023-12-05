@@ -38,8 +38,11 @@ const MuroFacebook = () => {
       <CssBaseline />
 
       
-      <Container component="main" sx={{ flexGrow: 1, padding: '20px' }}>
-        <Toolbar />
+      <Container component="main" sx={{ flexGrow: 1 }}>
+        <Typography variant="h4" sx={{ textAlign: 'center' }} gutterBottom>
+          Muro
+        </Typography>
+        {/* <Toolbar /> */}
         <Grid container spacing={2}>
           <Grid item xs={12} md={8}>
             {/* Lista de Publicaciones */}
@@ -47,12 +50,12 @@ const MuroFacebook = () => {
               <CardHeader
                 avatar={<Avatar src="URL_DE_LA_IMAGEN_DEL_PERFIL" />}
                 title="Nombre del Usuario"
-                subheader="Usuario@facebook.com"
+                subheader="Usuario@gmail.com"
               />
               <CardContent>
                 {/* Aquí puedes mostrar las publicaciones del usuario */}
                 <Typography variant="body2" color="textSecondary" component="p">
-                  Contenido de la publicación...
+                  ¡Proximamente! Contenido de publicaciones de tus comunidades...
                   Lorem ipsum dolor sit, amet consectetur adipisicing elit. Repellendus obcaecati non, odit dolorum cupiditate voluptas culpa sed labore nobis in. Quia repellendus laborum amet reiciendis, distinctio eos fugiat veniam! Voluptas.
                 </Typography>
               </CardContent>
@@ -62,12 +65,12 @@ const MuroFacebook = () => {
               <CardHeader
                 avatar={<Avatar src="URL_DE_LA_IMAGEN_DEL_PERFIL" />}
                 title="Nombre del Usuario"
-                subheader="Usuario@facebook.com"
+                subheader="Usuario@gmail.com"
               />
               <CardContent>
                 {/* Aquí puedes mostrar las publicaciones del usuario */}
                 <Typography variant="body2" color="textSecondary" component="p">
-                  Contenido de la publicación...
+                  ¡Proximamente! Contenido de publicaciones de tus comunidades...
                   Lorem ipsum dolor sit, amet consectetur adipisicing elit. Repellendus obcaecati non, odit dolorum cupiditate voluptas culpa sed labore nobis in. Quia repellendus laborum amet reiciendis, distinctio eos fugiat veniam! Voluptas.
                 </Typography>
               </CardContent>
@@ -77,12 +80,12 @@ const MuroFacebook = () => {
               <CardHeader
                 avatar={<Avatar src="URL_DE_LA_IMAGEN_DEL_PERFIL" />}
                 title="Nombre del Usuario"
-                subheader="Usuario@facebook.com"
+                subheader="Usuario@gmail.com"
               />
               <CardContent>
                 {/* Aquí puedes mostrar las publicaciones del usuario */}
                 <Typography variant="body2" color="textSecondary" component="p">
-                  Contenido de la publicación...
+                  ¡Proximamente! Contenido de publicaciones de tus comunidades...
                   Lorem ipsum dolor sit, amet consectetur adipisicing elit. Repellendus obcaecati non, odit dolorum cupiditate voluptas culpa sed labore nobis in. Quia repellendus laborum amet reiciendis, distinctio eos fugiat veniam! Voluptas.
                 </Typography>
               </CardContent>
@@ -93,14 +96,20 @@ const MuroFacebook = () => {
           <Grid item xs={12} md={4}>
             {/* Lista de Seguidores */}
             <Card>
-              <CardHeader title="Comunidad" />
+              <CardHeader title="Tus comunidades" />
               <CardContent>
                 {/* Aquí puedes mostrar la lista de seguidores */}
                 <Typography variant="body2" color="textSecondary" component="p">
-                 Nuevas Publicaciones: Los Chinos
+                 Proximamente: Unirse a comunidades.
                 </Typography>
                 <Typography variant="body2" color="textSecondary" component="p">
-                Nuevas Publicaciones: Viva chivas team
+                 Nuevas Publicaciones: Nuevas recetas!.
+                </Typography>
+                <Typography variant="body2" color="textSecondary" component="p">
+                - Comunidad fitness: Nuevas rutinas de ejercicio.
+                </Typography>
+                <Typography variant="body2" color="textSecondary" component="p">
+                - Comunidad corredores: Nuevas rutas.
                 </Typography>
 
                 {/* Repite este bloque para más seguidores */}
@@ -112,10 +121,10 @@ const MuroFacebook = () => {
               <CardContent>
                 {/* Aquí puedes mostrar la lista de seguidores */}
                 <Typography variant="body2" color="textSecondary" component="p">
-                  4 km
+                  Correr: 4 km
                 </Typography>
                 <Typography variant="body2" color="textSecondary" component="p">
-                  Bajar 2 kg
+                  Bajar: 2 kg
                 </Typography>
 
                 {/* Repite este bloque para más seguidores */}

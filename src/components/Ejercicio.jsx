@@ -80,6 +80,10 @@ const ExerciseComponent = () => {
   return (
     <div>
 
+      <Typography variant="h4" sx={{ textAlign: 'center' }} gutterBottom>
+        Ejercicio
+      </Typography>
+
       <Button
         variant="contained"
         startIcon={<AddIcon />}
